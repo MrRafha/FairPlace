@@ -1,0 +1,314 @@
+\documentclass[12pt, a4paper]{article}
+
+% Definição de margens conforme ABNT (Superior: 3cm, Inferior: 2cm, Esquerda: 3cm, Direita: 2cm)
+\usepackage[a4paper, top=3cm, bottom=2cm, left=3cm, right=2cm]{geometry}
+\usepackage{fontspec}
+
+% Configuração de Idioma para Português
+\usepackage[portuguese, bidi=basic, provide=*]{babel}
+\babelprovide[import, onchar=ids fonts]{portuguese}
+% Utilizando Noto Sans para atender a exigência de fonte sem serifa (estilo Arial)
+\babelfont{rm}{Noto Sans}
+
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+% Pacote para hiperlinks
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=black,      
+    urlcolor=black,
+}
+
+% Configurações ABNT
+\setlength{\parindent}{1.25cm} % Recuo da primeira linha do parágrafo
+
+% Ambiente para Citação Longa (mais de 3 linhas): recuo de 4cm, tamanho menor (10pt/11pt)
+\newenvironment{citacaolonga}{
+    \vspace{\baselineskip}
+    \small
+    \begin{list}{}{
+        \setlength{\leftmargin}{4cm}
+        \setlength{\rightmargin}{0cm}
+        \setlength{\listparindent}{\parindent}
+        \setlength{\itemindent}{0pt}
+        \setlength{\parsep}{0pt}
+    }
+    \item\relax
+}{\end{list}\vspace{\baselineskip}}
+
+\begin{document}
+
+% --------------------------------------------------------
+% CAPA (Page 1)
+% --------------------------------------------------------
+\begin{titlepage}
+    \centering
+    % Placeholder para a Logo do IFPI
+    \framebox{\parbox{0.3\textwidth}{\centering \vspace{1.5cm} \textbf{LOGO DO IFPI} \vspace{1.5cm}}} \\[1cm]
+    
+    \textbf{\MakeUppercase{Instituto Federal de Educação, Ciência e Tecnologia do Piauí}} \\
+    \textbf{\MakeUppercase{Campus Teresina Central}} \\
+    \textbf{\MakeUppercase{Nome do Curso}} \\[3.5cm]
+    
+    \textbf{\MakeUppercase{Nome do Aluno}} \\[4.5cm]
+    
+    \textbf{\MakeUppercase{Título do Trabalho: Subtítulo (se houver)}}
+    
+    \vfill
+    
+    \textbf{\MakeUppercase{Teresina, Piauí}} \\
+    \textbf{2024}
+\end{titlepage}
+
+% --------------------------------------------------------
+% FOLHA DE ROSTO (Page 2)
+% --------------------------------------------------------
+\begin{titlepage}
+    \centering
+    \textbf{\MakeUppercase{Nome do Aluno}} \\[4.5cm]
+    
+    \textbf{\MakeUppercase{Título do Trabalho: Subtítulo (se houver)}} \\[2.5cm]
+    
+    \hfill
+    \begin{minipage}{0.5\textwidth}
+        \raggedright
+        Trabalho de Conclusão de Curso (Artigo Científico) apresentado como exigência parcial para obtenção do diploma do Curso de Xxxxxxxxxxxxx do Instituto Federal de Educação, Ciência e Tecnologia do Piauí, Campus Teresina.\\[1.5cm]
+        Orientador: Prof. Dr. Nome do Orientador
+    \end{minipage}
+    
+    \vfill
+    
+    \textbf{\MakeUppercase{Teresina, Piauí}} \\
+    \textbf{2024}
+\end{titlepage}
+
+% --------------------------------------------------------
+% FOLHA DE APROVAÇÃO (Page 3)
+% --------------------------------------------------------
+\begin{titlepage}
+    \begin{flushright}
+        Aprovado em \_\_\_/\_\_\_/\_\_\_\_\_
+    \end{flushright}
+    
+    \vspace{1cm}
+    \begin{center}
+        \textbf{\MakeUppercase{Nome do Aluno}} \\[1.5cm]
+        \textbf{\MakeUppercase{Título do Trabalho: Subtítulo (se houver)}} \\[1.5cm]
+    \end{center}
+    
+    \hfill
+    \begin{minipage}{0.5\textwidth}
+        \raggedright
+        Trabalho de Conclusão de Curso (Artigo Científico) apresentado como exigência parcial para obtenção do diploma do Curso de Xxxxxxxxxxxxx do Instituto Federal de Educação, Ciência e Tecnologia do Piauí, Campus Teresina.
+    \end{minipage}\\[1.5cm]
+    
+    \noindent\textbf{BANCA EXAMINADORA:}\\[1.5cm]
+    
+    \noindent\rule{12cm}{0.2mm} \\
+    Prof. Dr. Nome do Orientador (Orientador)\\
+    Instituto Federal do Piauí (IFPI)\\[1cm]
+    
+    \noindent\rule{12cm}{0.2mm} \\
+    Prof. Me. Nome Primeiro Membro da Banca\\
+    Instituto Federal do Piauí (IFPI)\\[1cm]
+    
+    \noindent\rule{12cm}{0.2mm} \\
+    Prof. Me. Nome Segundo Membro da Banca\\
+    Instituto Federal do Piauí (IFPI)\\[1cm]
+    
+    \noindent\rule{12cm}{0.2mm} \\
+    Prof. Dr. Nome Terceiro Membro da Banca\\
+    Instituto Federal do Piauí (IFPI)
+    
+    \vfill
+    \begin{center}
+        \textbf{\MakeUppercase{Teresina, Piauí}} \\
+        \textbf{2024}
+    \end{center}
+\end{titlepage}
+
+% --------------------------------------------------------
+% INÍCIO DO ARTIGO (Page 4)
+% --------------------------------------------------------
+% Configurando contador de páginas para iniciar visivelmente aqui, se desejado.
+% A numeração conta as páginas anteriores, mas só é exibida a partir da Introdução.
+\pagestyle{plain}
+\setcounter{page}{4}
+
+\begin{center}
+    \textbf{\MakeUppercase{Título do Trabalho: Subtítulo (se houver)}} \\[1cm]
+    
+    Nome Completo do(a) Autor(a)\footnote{Currículo sucinto do(a) autor(a). Instituição de ensino. E-mail.} \\
+    Nome Completo do(a) Professor(a) Orientador(a)\footnote{Currículo sucinto do(a) professor(a) orientador(a). Instituição de ensino. E-mail.}
+\end{center}
+
+\vspace{1cm}
+
+\noindent\textbf{RESUMO}\\[0.3cm]
+\noindent O resumo e o abstract (em inglês) devem ser redigidos em fonte Arial ou Times New Roman, tamanho 12, com espaçamento entre linhas do tipo simples (1,0), contendo no mínimo 150 palavras e, no máximo 250 palavras. Devem estar especificados: os objetivos do trabalho, a fundamentação teórica, a metodologia, os resultados e as conclusões ou considerações. O texto não deve conter citações e siglas.\\[0.3cm]
+\textbf{Palavras-chaves:} de três a cinco descritores, com iniciais em minúsculo, separadas por ponto e vírgula e finalizada por ponto.
+
+\vspace{0.8cm}
+\noindent\textbf{ABSTRACT}\\[0.3cm]
+\noindent Elemento obrigatório, com as mesmas características do resumo em língua vernácula, digitado em folha separada (em inglês Tradução do texto original para o inglês).\\[0.3cm]
+\textbf{Keywords:} Tradução das Palavras-chaves para o inglês.
+
+\vspace{0.8cm}
+\noindent Data de Aprovação: \_\_\_/\_\_\_/\_\_\_\_ \hfill (Data de Apresentação do Artigo)
+
+\vspace{1cm}
+
+\section{INTRODUÇÃO}
+
+Primeira parte do texto deve ser clara, direta e concisa. Deve também conter as delimitações iniciais do assunto, a problematização, os objetivos gerais e operacionais (ou específicos), a delimitação do tema, bem como outros elementos essenciais para situar o leitor dentro do texto (SPERANDIO, 2021, p. 33).
+
+Os trabalhos devem ser apresentados, no caso impresso, em papel branco ou reciclado no formato A4. O espaçamento entre linhas será simples, sem espaço entre parágrafos e com recuo de 1,25 cm no início de cada parágrafo. A fonte pode ser Arial ou Times New Roman (decisão do orientador) e deve permanecer uniforme durante todo o texto, tamanho 12. O tamanho das margens deve ser: superior $= 3,0$ cm; inferior $= 2,0$ cm; esquerda $= 3,0$ cm; direita $= 2,0$ cm.
+
+Palavras ou expressões estrangeiras devem estar em \textit{itálico}. Nomes próprios ou de instituições, bem como de produtos (tais como livros, filmes, redes sociais, softwares e outros) não precisam estar em itálico.
+
+Para os títulos das seções e subseções usar fonte Arial ou Times New Roman (uniforme), tamanho 12, alinhados à margem esquerda, com espaçamento simples entre as linhas, bem como entre os títulos e subseções das seções e o texto. As notas explicativas devem vir no rodapé da página onde são inseridas. As páginas devem apresentar numeração a partir da Introdução.
+
+\section{DESENVOLVIMENTO}
+
+Parte mais importante do artigo. Deve conter a explanação do assunto de maneira organizada e bem delineada. Pode ser dividido em seções e subseções, de acordo com a NBR 6024/2012 (SPERANDIO, 2021, p. 33).
+
+Neste espaço são expostas argumentações às ideias de forma objetiva e, que estejam em consonância com o tema abordado na introdução. O desenvolvimento deve ser fundamentado em referencial teórico.
+
+Tanto a estrutura do texto, quanto a numeração sequencial dos itens, as citações e referência devem seguir as normas da ABNT destinadas a cada caso e conforme estabelecido no Manual de TCC do IFPI. O mesmo vale para as ilustrações.
+
+\begin{citacaolonga}
+Usar fonte Arial ou Times New Roman, tamanho 10 ou 11, nestes casos: nas citações com mais de três linhas, nas notas de rodapé, na indicação da fonte (autoria) das figuras, quadros e tabelas, bem como nas legendas e nos conteúdos dos quadros e das tabelas. Para a citação com mais de três linhas deixar uma linha em branco antes e outra após a citação direta e recuo de 4 cm da margem esquerda. (AUTOR, ano, p. xx).
+\end{citacaolonga}
+
+Quando o autor do trabalho científico faz uma transcrição textual (cópia) de parte da obra de outros autores para fundamentar sua produção textual. Quando até 3 linhas é considerada curta e mais de 3 linhas é considerada longa.
+
+\vspace{0.5cm}
+\begin{center}
+    \textbf{Quadro 1}: Estilos cognitivos propostos por psicólogos. \\[0.2cm]
+    \small
+    \begin{tabular}{lp{4cm}p{7cm}}
+        \toprule
+        01 & Amplo/restrito & Preferência por pensar em termos de poucas... \\
+        02 & Analítico/não analítico & Tendência à diversificação entre muitos atributos \\
+        03 & Disperso/concentrado & Tendência a perder detalhes versus tendência \\
+        04 & Impulsivo & Tendência a reagir rapidamente versus tendência... \\
+        05 & Convergente/divergente & Pensamento lógico e dedutivo versus pensamento... \\
+        06 & Sequencial/holístico & Preferência por trabalhar em sequência... \\
+        \bottomrule
+    \end{tabular}\\[0.2cm]
+    \raggedright \small Fonte: Willingham (2011).
+\end{center}
+\vspace{0.5cm}
+
+\subsection{Orientações sobre Ilustrações e Tabelas}
+
+As tabelas devem apresentar informações tratadas de maneira estatística, de acordo com o Instituto Brasileiro de Geografia e Estatística (IBGE).
+
+Segundo a NBR 14724 (2011) a tabela é uma forma não discursiva de apresentar informações das quais o dado numérico se destaca como informação central.
+
+Se houver figuras, quadros e/ou tabelas, estas devem ser inseridas no texto e estar devidamente citadas.
+
+\vspace{0.5cm}
+\begin{center}
+    \textbf{Tabela 1} -- Exemplo de Tabela \\[0.2cm]
+    \small
+    \begin{tabular}{lccc}
+        \toprule
+        Cursos & Títulos & Exemplares & Percentual \\
+        \midrule
+        Matemática & 55 & 383 & 19\% \\
+        Biologia & 68 & 443 & 22\% \\
+        Agronomia & 81 & 474 & 25\% \\
+        Ensino Médio & 145 & 655 & 34\% \\
+        \midrule
+        Total & 349 & 1.955 & 100\% \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+\vspace{0.5cm}
+
+\subsection{Orientações sobre as Referências}
+
+A fonte das referências deve ser Arial ou Times New Roman, tamanho 12, com espaçamento simples entre as linhas, alinhamento à margem esquerda, sem recuo, com um espaço simples entre cada referência. O título Referências deve ser centralizado na página, grafado em negrito e em maiúsculas.
+
+Para compor cada referência, seguir o que diz a NBR 6023-2018, observando os exemplos de cada tipo de material que a norma apresenta.
+
+\subsubsection{Observação sobre a lista de referências}
+
+A lista de referências deve conter somente as obras citadas ao longo do texto. Ao montar a lista, observar se a referência realmente foi citada; e vice versa.
+
+\vspace{0.5cm}
+\begin{center}
+    \textbf{Figura 1} - Exemplo de Figura\\[0.2cm]
+    \framebox{\parbox{0.5\textwidth}{\centering \vspace{1.5cm} \textbf{Não esqueça!\\ CITOU-REFERENCIOU} \vspace{1.5cm}}}
+\end{center}
+\vspace{0.5cm}
+
+As referências que seguem abaixo da conclusão ou considerações finais são meramente ilustrativas para este template.
+
+\section{CONCLUSÃO OU CONSIDERAÇÕES FINAIS}
+
+Feita com base nos objetivos propostos. Além de concluir os objetivos, o autor deverá dizer se a hipótese foi confirmada ou não e oferecer sugestões a fim de contribuir com as pesquisas da área (SPERANDIO, 2021, p. 33). A intervenção nunca deve ferir os direitos humanos. As considerações devem ser coerentes com todo o corpo textual e realmente mostrar-se eficaz.
+
+A lista de referências, ilustrada a seguir, é a relação de todas as obras citadas na pesquisa, organizada em ordem alfabética de entrada (autores pessoais, entidades ou títulos).
+
+As referências devem ser indicadas em espaço simples (1,0), alinhadas à margem esquerda do texto e separadas entre si por uma linha em branco de espaço simples.
+
+\clearpage
+
+% --------------------------------------------------------
+% REFERÊNCIAS
+% --------------------------------------------------------
+\begin{center}
+\textbf{\MakeUppercase{Referências}}
+\end{center}
+\vspace{1cm}
+
+\noindent ABNT. \textbf{NBR 14724}: Informação e documentação: trabalhos acadêmicos: apresentação elaboração. 3. ed. Rio de Janeiro, 2011. Citado na página 4.\\[0.5cm]
+\noindent SPERANDIO, D. S. \textbf{Manual de normalização de trabalhos acadêmicos do IFPI}. 2021. SPERANDIO. Disponível em: $<$https://www.ifpi.edu.br/area-doestudante/bibliotecas/manual\_tcc\_atualizado.pdf$>$. Acesso em: 12 ago. 2021. Citado 3 vezes nas páginas 3, 4 e 5.\\[0.5cm]
+\noindent WILLINGHAM, D. T. \textbf{Por que os Alunos não Gostam da Escola?}: Respostas da Ciência Cognitiva para Tornar a Sala de Aula Mais Atrativa e Efetiva. Porto Alegre: Artmed, 2011. Citado na página 4.
+
+\clearpage
+
+% --------------------------------------------------------
+% ANEXOS / QUADROS EXTRAS (Page 9)
+% --------------------------------------------------------
+\section*{A RELAÇÃO DE NORMAS TÉCNICAS VIGENTES SOBRE VIDROS PLANOS}
+\addcontentsline{toc}{section}{A RELAÇÃO DE NORMAS TÉCNICAS VIGENTES SOBRE VIDROS PLANOS}
+
+\vspace{0.5cm}
+\begin{center}
+    \textbf{Quadro 2}: Normas técnicas vigentes sobre Vidros Planos do ABNT/CB-037 \\[0.2cm]
+    \small
+    \begin{tabular}{p{15cm}}
+        \toprule
+        \textbf{Norma} \\
+        \midrule
+        ABNT NBR 16918:2020 \\
+        Vidro termoendurecido \\
+        \midrule
+        ABNT NBR 16023:2011 Emenda 1:2020 \\
+        Vidros revestidos para controle solar - Requisitos, classificação e métodos de ensaio \\
+        \midrule
+        ABNT NBR 16023:2020 \\
+        Vidros revestidos para controle solar - Requisitos, classificação e métodos de ensaio \\
+        \bottomrule
+    \end{tabular}\\[0.2cm]
+    \raggedright \small Fonte: Catálogo da ABNT (2022).
+\end{center}
+
+\clearpage
+
+% --------------------------------------------------------
+% AGRADECIMENTOS (Page 10)
+% --------------------------------------------------------
+\section*{AGRADECIMENTOS}
+\addcontentsline{toc}{section}{AGRADECIMENTOS}
+
+Agradeço a todos os professores e servidores do IFPI pois todos Xxxxx. XXXXXXXXXXXXxxxxxxx, que deu todo o apoio necessário para que chegasse até aqui. Agradeço ao meu Deus, que me deu força quando mais precisava.
+
+\end{document}
