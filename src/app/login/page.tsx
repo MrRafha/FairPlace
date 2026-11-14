@@ -29,10 +29,13 @@ function MarketPattern() {
 
 export default function LoginPage() {
   const [formMode, setFormMode] = useState<"login" | "register">("login");
+  const [registrationRole, setRegistrationRole] = useState<"buyer" | "seller">("buyer");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [product, setProduct] = useState("");
+  const [category, setCategory] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -96,6 +99,15 @@ export default function LoginPage() {
             <button type="button" className={formMode === "login" ? "selected" : ""} aria-pressed={formMode === "login"} onClick={() => { setFormMode("login"); setError(""); }}>Entrar</button>
             <button type="button" className={formMode === "register" ? "selected" : ""} aria-pressed={formMode === "register"} onClick={() => { setFormMode("register"); setError(""); }}>Registrar-se</button>
           </div>
+          {formMode === "register" ? (
+            <div className="registration-role" role="group" aria-label="Escolha como você usará o FairPlace">
+              <p>Como você quer usar o FairPlace?</p>
+              <div className="user-type-choice">
+                <button type="button" className={registrationRole === "buyer" ? "selected" : ""} aria-pressed={registrationRole === "buyer"} onClick={() => setRegistrationRole("buyer")}>Sou consumidor</button>
+                <button type="button" className={registrationRole === "seller" ? "selected" : ""} aria-pressed={registrationRole === "seller"} onClick={() => setRegistrationRole("seller")}>Sou vendedor</button>
+              </div>
+            </div>
+          ) : null}
           <form onSubmit={handleSubmit}>
             {formMode === "register" ? (
               <>
@@ -112,6 +124,20 @@ export default function LoginPage() {
                 <label htmlFor="password-confirmation">Confirme sua senha</label>
                 <input id="password-confirmation" name="password-confirmation" type="password" autoComplete="new-password" placeholder="Digite sua senha novamente" value={passwordConfirmation} onChange={(event) => setPasswordConfirmation(event.target.value)} required />
               </>
+            ) : null}
+            {formMode === "register" && registrationRole === "seller" ? (
+              <fieldset className="seller-details">
+                <legend>Conte um pouco sobre sua produção</legend>
+                <label htmlFor="product">O que você vende?</label>
+                <input id="product" name="product" type="text" placeholder="Ex.: pães artesanais, cerâmica..." value={product} onChange={(event) => setProduct(event.target.value)} required />
+                <label htmlFor="category">Em qual categoria se encaixa?</label>
+                <select id="category" name="category" value={category} onChange={(event) => setCategory(event.target.value)} required>
+                  <option value="" disabled>Selecione uma categoria</option>
+                  <option value="feira">Feira e alimentos</option>
+                  <option value="artesanato">Artesanato</option>
+                  <option value="agricultura">Agricultura local</option>
+                </select>
+              </fieldset>
             ) : null}
             <div className="captcha-placeholder" role="group" aria-label="Área reservada para CAPTCHA">
               <span className="captcha-checkbox" aria-hidden="true" />
