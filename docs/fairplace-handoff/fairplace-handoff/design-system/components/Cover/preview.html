@@ -1,0 +1,66 @@
+<!-- @dsCard height=300 -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap">
+<style>
+  body{margin:0}
+  .cover{position:relative;width:960px;height:300px;overflow:hidden;background:var(--paper)}
+  .cover svg{position:absolute;inset:0;width:960px;height:300px}
+  .brand{fill:var(--green)}
+  .deep{fill:var(--green-dark)}
+  .sun{fill:var(--yellow)}
+  .ink{fill:var(--ink)}
+  .tint{fill:var(--green-soft)}
+  .tile{rx:var(--radius-lg)}
+  .cover__text{position:absolute;left:48px;bottom:44px;max-width:440px}
+  .cover__name{margin:0;font:800 80px/.95 var(--font-display);letter-spacing:-3px;color:var(--ink)}
+  .cover__tag{margin:16px 0 0;font:500 14px/1.4 var(--font-body);color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="cover">
+  <!--
+    blocos: green 192x208 (space-12 x4), yellow disco 96 (space-12 x2), ink 144x96, green-soft 96x160; cantos radius-lg
+    arranjo: uma laje alta verde sangrando pelo topo, com satélites à direita (sol, bloco de tinta, tom suave no canto)
+    padrão: meias-luas na barra dos blocos, como a franja de um toldo de feira — a marca é a barraca e o README pede formas arredondadas e acolhedoras
+    escalas: passo do toldo 24px (space-6), raio 12px (space-3), blocos em múltiplos de space-12, cantos radius-lg
+  -->
+  <svg viewBox="0 0 960 300" aria-hidden="true">
+    <rect class="brand tile" x="528" y="-16" width="192" height="208"/>
+    <rect class="brand" x="528" y="160" width="192" height="32"/>
+    <circle class="sun" cx="792" cy="96" r="48"/>
+    <rect class="ink tile" x="744" y="168" width="144" height="80"/>
+    <rect class="ink" x="744" y="216" width="144" height="32"/>
+    <rect class="tint tile" x="864" y="-16" width="112" height="144"/>
+    <rect class="tint" x="864" y="96" width="112" height="32"/>
+
+    <path class="deep" d="M528 192a12 12 0 0024 0z"/>
+    <path class="sun"  d="M552 192a12 12 0 0024 0z"/>
+    <path class="deep" d="M576 192a12 12 0 0024 0z"/>
+    <path class="sun"  d="M600 192a12 12 0 0024 0z"/>
+    <path class="deep" d="M624 192a12 12 0 0024 0z"/>
+    <path class="sun"  d="M648 192a12 12 0 0024 0z"/>
+    <path class="deep" d="M672 192a12 12 0 0024 0z"/>
+    <path class="sun"  d="M696 192a12 12 0 0024 0z"/>
+
+    <path class="brand" d="M744 248a12 12 0 0024 0z"/>
+    <path class="sun"   d="M768 248a12 12 0 0024 0z"/>
+    <path class="brand" d="M792 248a12 12 0 0024 0z"/>
+    <path class="sun"   d="M816 248a12 12 0 0024 0z"/>
+    <path class="brand" d="M840 248a12 12 0 0024 0z"/>
+    <path class="sun"   d="M864 248a12 12 0 0024 0z"/>
+
+    <path class="brand" d="M864 128a12 12 0 0024 0z"/>
+    <path class="deep"  d="M888 128a12 12 0 0024 0z"/>
+    <path class="brand" d="M912 128a12 12 0 0024 0z"/>
+    <path class="deep"  d="M936 128a12 12 0 0024 0z"/>
+  </svg>
+  <div class="cover__text">
+    <h1 class="cover__name">FairPlace</h1>
+    <p class="cover__tag">O que é feito perto, chega mais perto.</p>
+  </div>
+</div>
+</body>
+</html>

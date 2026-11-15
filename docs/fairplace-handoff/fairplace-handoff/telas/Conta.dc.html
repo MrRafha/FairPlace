@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Minha conta</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="font-family: Inter, system-ui, sans-serif; font-size: 14px; line-height: 1.5; color: #1f2933; background: #f8f6f0">
+
+<header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 24px; background: #ffffff; border-bottom: 1px solid #dfe5df">
+<a href="Main.dc.html" style="font-family: Poppins, sans-serif; font-weight: 800; font-size: 22px; letter-spacing: -1px; color: #1f2933; text-decoration: none">FairPlace</a>
+<nav aria-label="Conta" style="display: flex; gap: 8px">
+<a href="Conta.dc.html" aria-current="page" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border: 1px solid #2f7d4a; border-radius: 8px; background: #e7f1e9; color: #205936; font-weight: 700; font-size: 13px; text-decoration: none">Minha conta</a>
+<a href="#sair" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; border-radius: 8px; color: #66736b; font-weight: 700; font-size: 13px; text-decoration: none">Sair</a>
+</nav>
+</header>
+
+<main style="max-width: 760px; margin: 0 auto; box-sizing: border-box; padding: 32px 24px 56px; display: flex; flex-direction: column; gap: 24px">
+
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; line-height: 1; letter-spacing: 1.25px; text-transform: uppercase; color: #2f7d4a"><span style="width: 6px; height: 6px; border-radius: 999px; background: #f2b84b"></span>Minha conta</span>
+<h1 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 800; font-size: 32px; line-height: 1.2; letter-spacing: -1px">Olá, Marina</h1>
+</div>
+
+<section aria-labelledby="h-dados" style="display: flex; flex-direction: column; gap: 20px; padding: 24px; background: #ffffff; border: 1px solid #dfe5df; border-radius: 16px">
+<h2 id="h-dados" style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 24px; line-height: 1.25; letter-spacing: -0.5px">Dados da conta</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center">
+<span role="img" aria-label="Sua foto" style="display: grid; place-items: center; width: 72px; height: 72px; flex: none; border-radius: 999px; background: #e7f1e9; color: #205936; font-family: Poppins, sans-serif; font-weight: 700; font-size: 26px">M</span>
+<div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start">
+<button type="button" style="min-height: 44px; padding: 0 16px; border: 1px solid #dfe5df; border-radius: 8px; background: #ffffff; color: #1f2933; font-family: inherit; font-weight: 700; font-size: 14px">Trocar foto</button>
+<span style="font-size: 12px; font-weight: 500; color: #66736b">JPG ou PNG, até 2 MB.</span>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 6px"><label for="c-nome" style="font-weight: 600; font-size: 13px">Nome</label><input id="c-nome" value="Marina Alves" style="width: 100%; box-sizing: border-box; min-height: 46px; padding: 0 14px; border: 1px solid #7f8b83; border-radius: 8px; background: #ffffff; color: #1f2933; font-family: inherit; font-size: 14px"></div>
+<div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 6px"><label for="c-email" style="font-weight: 600; font-size: 13px">E-mail</label><input id="c-email" value="marina@exemplo.com" readonly aria-describedby="c-email-h" style="width: 100%; box-sizing: border-box; min-height: 46px; padding: 0 14px; border: 1px solid #7f8b83; border-radius: 8px; background: #f8f6f0; color: #66736b; font-family: inherit; font-size: 14px"><span id="c-email-h" style="font-size: 12px; font-weight: 500; color: #66736b">O e-mail não pode ser alterado.</span></div>
+</div>
+<button type="button" style="align-self: flex-start; min-height: 48px; padding: 0 22px; border: 0; border-radius: 8px; background: #2f7d4a; color: #ffffff; font-family: inherit; font-weight: 700; font-size: 14px; box-shadow: 0 6px 16px rgba(47,125,74,0.28)">Salvar alterações</button>
+</section>
+
+<section aria-labelledby="h-senha" style="display: flex; flex-direction: column; gap: 20px; padding: 24px; background: #ffffff; border: 1px solid #dfe5df; border-radius: 16px">
+<h2 id="h-senha" style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 24px; line-height: 1.25; letter-spacing: -0.5px">Alterar senha</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<div style="flex: 1 1 100%; display: flex; flex-direction: column; gap: 6px"><label for="s-atual" style="font-weight: 600; font-size: 13px">Senha atual</label><input id="s-atual" type="password" autocomplete="current-password" style="width: 100%; max-width: 348px; box-sizing: border-box; min-height: 46px; padding: 0 14px; border: 1px solid #7f8b83; border-radius: 8px; background: #ffffff; color: #1f2933; font-family: inherit; font-size: 14px"></div>
+<div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 6px"><label for="s-nova" style="font-weight: 600; font-size: 13px">Nova senha</label><input id="s-nova" type="password" autocomplete="new-password" aria-describedby="s-nova-h" style="width: 100%; box-sizing: border-box; min-height: 46px; padding: 0 14px; border: 1px solid #7f8b83; border-radius: 8px; background: #ffffff; color: #1f2933; font-family: inherit; font-size: 14px"><span id="s-nova-h" style="font-size: 12px; font-weight: 500; color: #66736b">Use pelo menos 8 caracteres.</span></div>
+<div style="flex: 1 1 240px; display: flex; flex-direction: column; gap: 6px"><label for="s-conf" style="font-weight: 600; font-size: 13px">Repita a nova senha</label><input id="s-conf" type="password" autocomplete="new-password" style="width: 100%; box-sizing: border-box; min-height: 46px; padding: 0 14px; border: 1px solid #7f8b83; border-radius: 8px; background: #ffffff; color: #1f2933; font-family: inherit; font-size: 14px"></div>
+</div>
+<button type="button" style="align-self: flex-start; min-height: 48px; padding: 0 22px; border: 1px solid #dfe5df; border-radius: 8px; background: #ffffff; color: #1f2933; font-family: inherit; font-weight: 700; font-size: 14px">Atualizar senha</button>
+</section>
+
+<section aria-labelledby="h-fav" style="display: flex; flex-direction: column; gap: 16px; padding: 24px; background: #ffffff; border: 1px solid #dfe5df; border-radius: 16px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h2 id="h-fav" style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 24px; line-height: 1.25; letter-spacing: -0.5px">Vendedores favoritos</h2>
+<p style="margin: 0; color: #66736b">Quem você guardou para visitar de novo.</p>
+</div>
+
+<sc-if value="{{ comFavoritos }}" hint-placeholder-val="{{ true }}">
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px">
+<li style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 14px; border: 1px solid #dfe5df; border-radius: 16px">
+<span style="display: grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: 12px; background: #e7f1e9; color: #205936"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round"><path d="M4 10l1.5-5h13L20 10M4 10a2.67 2.67 0 005.33 0 2.67 2.67 0 005.34 0A2.67 2.67 0 0020 10M6 13v6h12v-6"></path></svg></span>
+<a href="Vendedor.dc.html" style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; justify-content: center; min-height: 44px; color: #1f2933; text-decoration: none"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 16px; letter-spacing: -0.2px">Banca da Dona Lúcia</span><span style="font-size: 12px; font-weight: 500; color: #66736b">Feira e alimentos · Rua do Mercado, Centro</span></a>
+<button type="button" aria-label="Remover Banca da Dona Lúcia dos favoritos" style="min-height: 44px; padding: 0 14px; border: 1px solid #dfe5df; border-radius: 8px; background: #ffffff; color: #1f2933; font-family: inherit; font-weight: 700; font-size: 13px">Remover</button>
+</li>
+<li style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding: 14px; border: 1px solid #dfe5df; border-radius: 16px">
+<span style="display: grid; place-items: center; width: 40px; height: 40px; flex: none; border-radius: 12px; background: #fcf1d6; color: #8a5a0a"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round"><path d="M12 3l7 9-7 9-7-9zM5 12h14"></path></svg></span>
+<a href="Vendedor.dc.html" style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; justify-content: center; min-height: 44px; color: #1f2933; text-decoration: none"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 16px; letter-spacing: -0.2px">Ateliê Barro Vivo</span><span style="font-size: 12px; font-weight: 500; color: #66736b">Artesanato · Travessa das Olarias, Vermelhão</span></a>
+<button type="button" aria-label="Remover Ateliê Barro Vivo dos favoritos" style="min-height: 44px; padding: 0 14px; border: 1px solid #dfe5df; border-radius: 8px; background: #ffffff; color: #1f2933; font-family: inherit; font-weight: 700; font-size: 13px">Remover</button>
+</li>
+</ul>
+</sc-if>
+
+<sc-if value="{{ semFavoritos }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px 24px; text-align: center; border: 1px dashed #7f8b83; border-radius: 16px">
+<span style="display: grid; place-items: center; width: 64px; height: 64px; border-radius: 16px; background: #fcf1d6; color: #8a5a0a"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.3-4.1 5.9-.8z"></path></svg></span>
+<h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 18px; letter-spacing: -0.2px">Nenhum favorito ainda</h3>
+<p style="margin: 0; max-width: 360px; color: #66736b">Toque na estrela no perfil de um vendedor para guardar ele aqui.</p>
+<a href="Main.dc.html" style="display: inline-flex; align-items: center; min-height: 46px; padding: 0 20px; border-radius: 8px; background: #2f7d4a; color: #ffffff; font-weight: 700; text-decoration: none">Explorar o mapa</a>
+</div>
+</sc-if>
+</section>
+
+<section aria-labelledby="h-painel" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding: 24px; background: #e7f1e9; border: 1px solid #2f7d4a; border-radius: 16px">
+<div style="flex: 1 1 280px; display: flex; flex-direction: column; gap: 4px">
+<h2 id="h-painel" style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 20px; line-height: 1.25; letter-spacing: -0.4px">Você também vende por aqui</h2>
+<p style="margin: 0">Cuide da sua vitrine, dos produtos e das publicações no painel.</p>
+</div>
+<a href="Painel.dc.html" style="display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border-radius: 8px; background: #1f2933; color: #ffffff; font-weight: 700; text-decoration: none">Abrir meu painel</a>
+</section>
+
+<section aria-labelledby="h-perigo" style="display: flex; flex-direction: column; gap: 14px; padding: 24px; background: #fbeceb; border: 1px solid #b3261e; border-radius: 16px">
+<h2 id="h-perigo" style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 20px; line-height: 1.25; letter-spacing: -0.4px; color: #b3261e">Zona de perigo</h2>
+<p style="margin: 0">Excluir a conta apaga seus dados, seus favoritos e, se você vende, a sua vitrine. Não dá para desfazer.</p>
+<div style="display: flex; flex-direction: column; gap: 6px"><label for="x-conf" style="font-weight: 600; font-size: 13px">Para confirmar, digite EXCLUIR</label><input id="x-conf" autocomplete="off" style="width: 100%; max-width: 348px; box-sizing: border-box; min-height: 46px; padding: 0 14px; border: 1px solid #7f8b83; border-radius: 8px; background: #ffffff; color: #1f2933; font-family: inherit; font-size: 14px"></div>
+<button type="button" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 20px; border: 1px solid #b3261e; border-radius: 8px; background: #ffffff; color: #b3261e; font-family: inherit; font-weight: 700; font-size: 14px"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"></path></svg>Excluir minha conta</button>
+</section>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"semFavoritos":{"editor":"boolean","default":false},"$preview":{"width":1280,"height":1700}}'>
+class Component extends DCLogic {
+renderVals() {
+var vazio = this.props.semFavoritos ?? false;
+return { comFavoritos: !vazio, semFavoritos: !!vazio };
+}
+}
+</script>
+</body>
+</html>

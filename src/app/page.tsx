@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { LISTING_CATEGORIES } from "@/lib/constants";
+
 function Mark({ small = false }: { small?: boolean }) {
   return (
     <span className={small ? "brand-mark brand-mark-small" : "brand-mark"} aria-hidden="true">
@@ -51,11 +53,11 @@ function SearchIcon() {
   );
 }
 
-const categories = [
-  { type: "craft" as const, name: "Artesanato", count: "42 lojas" },
-  { type: "market" as const, name: "Feira e alimentos", count: "68 lojas" },
-  { type: "farm" as const, name: "Agricultura local", count: "31 lojas" },
-];
+const categories = LISTING_CATEGORIES.map((category) => ({
+  type: category.icon,
+  name: category.label,
+  count: category.countLabel,
+}));
 
 const markers = [
   { left: "18%", top: "38%", type: "craft" as const, tone: "yellow" },

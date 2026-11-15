@@ -1,0 +1,59 @@
+/* FairPlace — gerado de tokens.json */
+:root, [data-theme="light"] {
+  --green: #2f7d4a;
+  --green-dark: #205936;
+  --green-soft: #e7f1e9;
+  --yellow: #f2b84b;
+  --yellow-soft: #fcf1d6;
+  --amber-dark: #8a5a0a;
+  --olive: #55631f;
+  --olive-soft: #eef1dc;
+  --ink: #1f2933;
+  --muted: #66736b;
+  --paper: #f8f6f0;
+  --surface: #ffffff;
+  --line: #dfe5df;
+  --line-strong: #7f8b83;
+  --on-fill: #ffffff;
+  --danger: #b3261e;
+  --danger-soft: #fbeceb;
+  --focus: var(--green-dark);
+  --shadow-card: 0 8px 22px rgba(31,41,51,0.12);
+  --shadow-hover: 0 14px 32px rgba(31,41,51,0.16);
+  --shadow-button: 0 6px 16px rgba(47,125,74,0.28);
+}
+[data-theme="contraste"] {
+  --green: #1a5230;
+  --green-dark: #0f3a20;
+  --green-soft: #d9ecdd;
+  --yellow: #f2b84b;
+  --yellow-soft: #fcf1d6;
+  --amber-dark: #6b4400;
+  --olive: #3f4a14;
+  --olive-soft: #eef1dc;
+  --ink: #0b1117;
+  --muted: #3f4a44;
+  --paper: #fbfaf5;
+  --surface: #ffffff;
+  --line: #5c6860;
+  --line-strong: #1f2933;
+  --on-fill: #ffffff;
+  --danger: #8c1410;
+  --danger-soft: #fbeceb;
+  --focus: var(--ink);
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+  --font-display: "Poppins", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}

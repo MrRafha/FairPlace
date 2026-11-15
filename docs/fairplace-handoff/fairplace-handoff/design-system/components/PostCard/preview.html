@@ -1,0 +1,38 @@
+<!-- @dsCard group="Cartões" height=400 subtitle="Publicação: como o vendedor posta e como o consumidor vê" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap">
+</head>
+<body style="margin:0">
+<div class="fp-stage">
+  <form class="fp-card fp-composer" onsubmit="return false">
+    <label class="fp-label" for="post">Nova publicação</label>
+    <textarea class="fp-input" id="post" placeholder="O que tem de novo na sua banca hoje?"></textarea>
+    <div class="fp-composer__foot">
+      <button type="button" class="fp-btn fp-btn--quiet">
+        <svg class="fp-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M4 17l5-4 4 3 3-2 4 3"/></svg>
+        Adicionar imagem
+      </button>
+      <button class="fp-btn fp-btn--primary">Publicar</button>
+    </div>
+  </form>
+  <article class="fp-card fp-post">
+    <header class="fp-post__head">
+      <span class="fp-iconbox">
+        <svg class="fp-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10l1.5-5h13L20 10"/><path d="M4 10a2.67 2.67 0 005.33 0 2.67 2.67 0 005.34 0A2.67 2.67 0 0020 10"/><path d="M6 13v6h12v-6"/></svg>
+      </span>
+      <span class="fp-post__who">
+        <span class="fp-post__name">Banca da Dona Lúcia</span>
+        <time class="fp-caption" datetime="2026-11-14">14 de novembro · há 2 horas</time>
+      </span>
+    </header>
+    <p class="fp-post__text">Chegou queijo coalho fresquinho e a primeira leva de doce de buriti da safra. Amanhã estou na feira a partir das 6h.</p>
+    <div class="fp-post__img" role="img" aria-label="Foto da publicação">
+      <svg class="fp-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="M4 17l5-4 4 3 3-2 4 3"/></svg>
+    </div>
+  </article>
+</div>
+</body>
+</html>

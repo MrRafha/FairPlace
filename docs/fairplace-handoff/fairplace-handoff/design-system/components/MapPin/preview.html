@@ -1,0 +1,45 @@
+<!-- @dsCard group="Mapa" height=300 subtitle="Pins por categoria, popup e toolbar flutuante" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap">
+</head>
+<body style="margin:0">
+<div class="fp-stage">
+  <div class="fp-map">
+    <span class="fp-map__road" style="left:0;right:0;top:150px;height:10px"></span>
+    <span class="fp-map__road" style="top:0;bottom:0;left:300px;width:10px"></span>
+    <span class="fp-map__road" style="left:0;right:0;top:60px;height:6px"></span>
+
+    <svg class="fp-pin fp-pin--feira" style="left:70px;top:150px" viewBox="0 0 36 46" role="img" aria-label="Feira e alimentos: Banca da Dona Lúcia">
+      <path class="fp-pin__drop" d="M18 44S4 28.5 4 17a14 14 0 1128 0c0 11.500-14 27-14 27z"/>
+      <g class="fp-pin__ico" transform="translate(9.500 8.500) scale(.7)"><path d="M4 10l1.5-5h13L20 10"/><path d="M4 10a2.67 2.67 0 005.33 0 2.67 2.67 0 005.34 0A2.67 2.67 0 0020 10"/><path d="M6 13v6h12v-6"/></g>
+    </svg>
+    <svg class="fp-pin fp-pin--artesanato" style="left:420px;top:170px" viewBox="0 0 36 46" role="img" aria-label="Artesanato: Ateliê Barro Vivo">
+      <path class="fp-pin__drop" d="M18 44S4 28.5 4 17a14 14 0 1128 0c0 11.500-14 27-14 27z"/>
+      <g class="fp-pin__ico" transform="translate(9.500 8.500) scale(.7)"><path d="M12 3l7 9-7 9-7-9z"/><path d="M5 12h14"/></g>
+    </svg>
+    <svg class="fp-pin fp-pin--agricultura" style="left:490px;top:50px" viewBox="0 0 36 46" role="img" aria-label="Agricultura local: Sítio Boa Esperança">
+      <path class="fp-pin__drop" d="M18 44S4 28.5 4 17a14 14 0 1128 0c0 11.500-14 27-14 27z"/>
+      <g class="fp-pin__ico" transform="translate(9.500 8.500) scale(.7)"><path d="M12 21v-9"/><path d="M12 12c0-4 3-7 8-7 0 5-3 8-8 7z"/><path d="M12 15c0-3-2-5-7-5 0 4 3 6 7 5z"/></g>
+    </svg>
+
+    <div class="fp-card fp-popup" style="left:118px;top:76px">
+      <span class="fp-badge fp-badge--feira">Feira e alimentos</span>
+      <h3 class="fp-vendor__name">Banca da Dona Lúcia</h3>
+      <span class="fp-caption">350 m · Rua do Mercado, Centro</span>
+      <a class="fp-link" href="#">Ver perfil</a>
+    </div>
+
+    <div class="fp-maptool" style="right:12px;top:12px">
+      Corrente, PI
+      <button class="fp-btn fp-btn--quiet fp-btn--pill">
+        <svg class="fp-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+        Minha localização
+      </button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

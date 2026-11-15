@@ -1,0 +1,132 @@
+/* FairPlace — estilos dos componentes. Todas as cores, raios e sombras vêm de tokens.json. */
+.fp-stage{margin:0;padding:24px;background:var(--paper);color:var(--ink);font:400 14px/1.5 var(--font-body);display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;box-sizing:border-box}
+.fp-stage *,.fp-stage *::before,.fp-stage *::after{box-sizing:border-box}
+.fp-col{display:flex;flex-direction:column;gap:12px}
+.fp-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.fp-ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.fp-ico--sm{width:14px;height:14px;stroke-width:2.2}
+.fp-muted{color:var(--muted)}
+.fp-caption{font:500 12px/1.4 var(--font-body);color:var(--muted)}
+.fp-h2{margin:0;font:700 24px/1.25 var(--font-display);letter-spacing:-.5px}
+.fp-h3{margin:0;font:600 18px/1.3 var(--font-display);letter-spacing:-.2px}
+.fp-link{color:var(--green);font-weight:600;text-decoration:none}
+.fp-link:hover{color:var(--green-dark);text-decoration:underline}
+
+/* foco visível em tudo que é interativo */
+.fp-btn:focus-visible,.fp-chip:focus-visible,.fp-card--link:focus-visible,.fp-link:focus-visible,.fp-input:focus-visible,.fp-switch input:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* Eyebrow */
+.fp-eyebrow{display:inline-flex;align-items:center;gap:8px;font:700 11px/1 var(--font-body);letter-spacing:1.25px;text-transform:uppercase;color:var(--green)}
+.fp-eyebrow::before{content:"";width:6px;height:6px;border-radius:var(--radius-full);background:var(--yellow)}
+
+/* Button */
+.fp-btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);min-height:46px;padding:0 20px;border:1px solid transparent;border-radius:var(--radius-sm);font:700 14px/1 var(--font-body);cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s,background-color .15s,border-color .15s,color .15s}
+.fp-btn--primary{background:var(--green);color:var(--on-fill);box-shadow:var(--shadow-button)}
+.fp-btn--primary:hover{background:var(--green-dark);transform:translateY(-1px)}
+.fp-btn--quiet{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.fp-btn--quiet:hover{border-color:var(--green);color:var(--green)}
+.fp-btn--dark{background:var(--ink);color:var(--on-fill)}
+.fp-btn--dark:hover{transform:translateY(-1px);box-shadow:var(--shadow-card)}
+.fp-btn--danger{background:var(--surface);border-color:var(--danger);color:var(--danger)}
+.fp-btn--danger:hover{background:var(--danger);color:var(--on-fill)}
+.fp-btn--pill{min-height:36px;padding:0 14px;border-radius:var(--radius-full);font-size:13px}
+.fp-btn--icon{width:46px;padding:0}
+.fp-btn--fav[aria-pressed="true"]{background:var(--yellow-soft);border-color:var(--amber-dark);color:var(--amber-dark)}
+.fp-btn--fav[aria-pressed="true"] .fp-ico{fill:var(--yellow)}
+.fp-btn[disabled]{opacity:.5;cursor:not-allowed;box-shadow:none;transform:none}
+
+/* FilterChip */
+.fp-chip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:var(--radius-full);background:var(--surface);color:var(--ink);font:600 13px/1 var(--font-body);cursor:pointer;transition:border-color .15s,color .15s,background-color .15s}
+.fp-chip:hover{border-color:var(--green);color:var(--green)}
+.fp-chip[aria-pressed="true"]{background:var(--green-soft);border-color:var(--green);color:var(--green-dark)}
+
+/* Badge */
+.fp-badge{display:inline-flex;align-items:center;gap:var(--space-1);height:24px;padding:0 10px;border-radius:var(--radius-full);font:700 11px/1 var(--font-body);letter-spacing:.2px;white-space:nowrap}
+.fp-badge--verified,.fp-badge--feira{background:var(--green-soft);color:var(--green-dark)}
+.fp-badge--artesanato{background:var(--yellow-soft);color:var(--amber-dark)}
+.fp-badge--agricultura{background:var(--olive-soft);color:var(--olive)}
+.fp-badge--off{background:var(--paper);color:var(--muted);border:1px solid var(--line)}
+
+/* Caixa de ícone */
+.fp-iconbox{display:grid;place-items:center;width:40px;height:40px;flex:none;border-radius:var(--radius-md);background:var(--green-soft);color:var(--green-dark)}
+.fp-iconbox--artesanato{background:var(--yellow-soft);color:var(--amber-dark)}
+.fp-iconbox--agricultura{background:var(--olive-soft);color:var(--olive)}
+.fp-iconbox--lg{width:64px;height:64px;border-radius:var(--radius-lg)}
+.fp-iconbox--lg .fp-ico{width:28px;height:28px}
+
+/* Card base */
+.fp-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);color:var(--ink)}
+.fp-card--link{display:block;text-decoration:none;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
+.fp-card--link:hover{transform:translateY(-2px);box-shadow:var(--shadow-card);border-color:var(--green)}
+
+/* VendorCard */
+.fp-vendor{display:flex;gap:var(--space-3);padding:14px;width:332px}
+.fp-vendor__body{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.fp-vendor__top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.fp-vendor__name{margin:0;font:600 16px/1.3 var(--font-display);letter-spacing:-.2px}
+.fp-vendor[aria-current="true"]{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+
+/* ProductCard */
+.fp-product{width:208px;overflow:hidden}
+.fp-product:hover{box-shadow:var(--shadow-hover)}
+.fp-product__img{display:grid;place-items:center;aspect-ratio:4/3;background:var(--green-soft);color:var(--green-dark)}
+.fp-product__img .fp-ico{width:32px;height:32px}
+.fp-product__body{display:flex;flex-direction:column;gap:4px;padding:14px}
+.fp-product__name{margin:0;font:600 15px/1.3 var(--font-display);letter-spacing:-.2px}
+.fp-product__price{font:700 18px/1.2 var(--font-display);letter-spacing:-.3px}
+.fp-product--off .fp-product__img{background:var(--paper);color:var(--muted)}
+.fp-product--off .fp-product__price{color:var(--muted)}
+
+/* PostCard */
+.fp-post{width:400px;padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-3)}
+.fp-post__head{display:flex;align-items:center;gap:10px}
+.fp-post__who{display:flex;flex-direction:column;flex:1;min-width:0}
+.fp-post__name{font:600 14px/1.3 var(--font-display)}
+.fp-post__text{margin:0}
+.fp-post__img{display:grid;place-items:center;height:150px;border-radius:var(--radius-md);background:var(--green-soft);color:var(--green-dark)}
+.fp-composer{width:400px;padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-3)}
+.fp-composer__foot{display:flex;justify-content:space-between;align-items:center;gap:8px}
+
+/* SearchField + FormField */
+.fp-field{display:flex;flex-direction:column;gap:6px;width:300px}
+.fp-label{font:600 13px/1.2 var(--font-body);color:var(--ink)}
+.fp-input{width:100%;min-height:46px;padding:0 14px;border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);font:400 14px/1.4 var(--font-body);transition:border-color .15s}
+.fp-input::placeholder{color:var(--muted)}
+.fp-input:hover{border-color:var(--green)}
+textarea.fp-input{padding:12px 14px;min-height:92px;resize:vertical}
+.fp-input[readonly]{background:var(--paper);color:var(--muted)}
+.fp-input[aria-invalid="true"]{border-color:var(--danger)}
+.fp-error{display:flex;align-items:center;gap:6px;font:600 12px/1.4 var(--font-body);color:var(--danger)}
+.fp-search{position:relative;width:332px;color:var(--muted)}
+.fp-search .fp-ico{position:absolute;left:16px;top:13px}
+.fp-search .fp-input{padding-left:44px;border-radius:var(--radius-full)}
+.fp-switch{display:inline-flex;align-items:center;gap:10px;min-height:44px;font:600 13px/1 var(--font-body);cursor:pointer}
+.fp-switch input{appearance:none;-webkit-appearance:none;margin:0;width:44px;height:26px;border-radius:var(--radius-full);background:var(--line-strong);position:relative;cursor:pointer;transition:background-color .15s}
+.fp-switch input::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:var(--radius-full);background:var(--surface);transition:transform .15s}
+.fp-switch input:checked{background:var(--green)}
+.fp-switch input:checked::after{transform:translateX(18px)}
+
+/* Mapa */
+.fp-map{position:relative;width:560px;height:250px;border-radius:var(--radius-lg);border:1px solid var(--line);background:var(--green-soft);overflow:hidden}
+.fp-map__road{position:absolute;background:var(--surface)}
+.fp-pin{position:absolute;width:36px;height:46px}
+.fp-pin__drop{stroke:var(--surface);stroke-width:2}
+.fp-pin__ico{fill:none;stroke:var(--on-fill);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.fp-pin--feira .fp-pin__drop{fill:var(--green)}
+.fp-pin--artesanato .fp-pin__drop{fill:var(--yellow);stroke:var(--amber-dark)}
+.fp-pin--artesanato .fp-pin__ico{stroke:var(--ink)}
+.fp-pin--agricultura .fp-pin__drop{fill:var(--olive)}
+.fp-popup{position:absolute;width:220px;padding:14px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;box-shadow:var(--shadow-card)}
+.fp-maptool{position:absolute;display:inline-flex;align-items:center;gap:10px;padding:5px 5px 5px 16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-full);box-shadow:var(--shadow-card);font:600 13px/1 var(--font-body)}
+
+/* EmptyState + carregamento */
+.fp-empty{width:320px;padding:28px 24px;display:flex;flex-direction:column;align-items:center;gap:var(--space-3);text-align:center;border-style:dashed}
+.fp-empty p{margin:0;color:var(--muted)}
+.fp-skel{display:block;border-radius:var(--radius-sm);background:var(--green-soft);animation:fp-pulse 1.4s ease-in-out infinite}
+@keyframes fp-pulse{50%{opacity:.45}}
+
+@media (prefers-reduced-motion:reduce){
+  .fp-btn,.fp-chip,.fp-card--link,.fp-input,.fp-switch input,.fp-switch input::after{transition:none}
+  .fp-btn:hover,.fp-card--link:hover{transform:none}
+  .fp-skel{animation:none}
+}

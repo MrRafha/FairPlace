@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Carregando</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap">
+<style>
+body{margin:0}
+@keyframes fp-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+@keyframes fp-shadow{0%,100%{transform:scaleX(1);opacity:.26}50%{transform:scaleX(.58);opacity:.12}}
+@keyframes fp-dot{0%,70%,100%{transform:scale(.7);opacity:.35}35%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.fp-anim{animation:none!important}}
+</style>
+</helmet>
+<div role="status" aria-live="polite" style="min-height: 720px; box-sizing: border-box; padding: 48px 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; text-align: center; font-family: Inter, system-ui, sans-serif; font-size: 14px; line-height: 1.5; color: #1f2933; background: #f8f6f0">
+
+<div aria-hidden="true" style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 18px">
+<svg class="fp-anim" viewBox="0 0 36 46" width="72" height="92" style="animation: fp-bounce 1.2s ease-in-out infinite"><path d="M18 44S4 28.5 4 17a14 14 0 1128 0c0 11.5-14 27-14 27z" style="fill: #2f7d4a; stroke: #ffffff; stroke-width: 2"></path><path transform="translate(9.5 8.5) scale(0.7)" d="M4 10l1.5-5h13L20 10M4 10a2.67 2.67 0 005.33 0 2.67 2.67 0 005.34 0A2.67 2.67 0 0020 10M6 13v6h12v-6" style="fill: none; stroke: #ffffff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round"></path></svg>
+<span class="fp-anim" style="width: 44px; height: 10px; border-radius: 999px; background: #1f2933; opacity: 0.26; animation: fp-shadow 1.2s ease-in-out infinite"></span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+<span style="font-family: Poppins, sans-serif; font-weight: 800; font-size: 28px; line-height: 1.1; letter-spacing: -1px">FairPlace</span>
+<p style="margin: 0; max-width: 300px; font-size: 15px; color: #66736b">Procurando o que tem de bom por perto…</p>
+</div>
+
+<div aria-hidden="true" style="display: flex; gap: 10px">
+<span class="fp-anim" style="width: 12px; height: 12px; border-radius: 999px; background: #2f7d4a; animation: fp-dot 1.2s ease-in-out infinite"></span>
+<span class="fp-anim" style="width: 12px; height: 12px; border-radius: 999px; background: #f2b84b; animation: fp-dot 1.2s ease-in-out 0.2s infinite"></span>
+<span class="fp-anim" style="width: 12px; height: 12px; border-radius: 999px; background: #55631f; animation: fp-dot 1.2s ease-in-out 0.4s infinite"></span>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":720}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

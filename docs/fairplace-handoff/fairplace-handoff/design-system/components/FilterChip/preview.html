@@ -1,0 +1,35 @@
+<!-- @dsCard group="Ações" height=96 subtitle="Filtro de categoria do mapa" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap">
+</head>
+<body style="margin:0">
+<div class="fp-stage">
+  <div class="fp-row" role="group" aria-label="Filtrar por categoria">
+    <button class="fp-chip" aria-pressed="true">Todos</button>
+    <button class="fp-chip" aria-pressed="false">
+      <svg class="fp-ico fp-ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10l1.5-5h13L20 10"/><path d="M4 10a2.67 2.67 0 005.33 0 2.67 2.67 0 005.34 0A2.67 2.67 0 0020 10"/><path d="M6 13v6h12v-6"/></svg>
+      Feira
+    </button>
+    <button class="fp-chip" aria-pressed="false">
+      <svg class="fp-ico fp-ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 9-7 9-7-9z"/><path d="M5 12h14"/></svg>
+      Artesanato
+    </button>
+    <button class="fp-chip" aria-pressed="false">
+      <svg class="fp-ico fp-ico--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-9"/><path d="M12 12c0-4 3-7 8-7 0 5-3 8-8 7z"/><path d="M12 15c0-3-2-5-7-5 0 4 3 6 7 5z"/></svg>
+      Agricultura
+    </button>
+  </div>
+</div>
+<script>
+var chips = document.querySelectorAll('.fp-chip');
+chips.forEach(function (c) {
+  c.addEventListener('click', function () {
+    chips.forEach(function (o) { o.setAttribute('aria-pressed', o === c); });
+  });
+});
+</script>
+</body>
+</html>

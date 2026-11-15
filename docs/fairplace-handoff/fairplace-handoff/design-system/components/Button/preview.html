@@ -1,0 +1,48 @@
+<!-- @dsCard group="Ações" height=170 subtitle="Primário, quieto, escuro, perigo e favoritar" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap">
+</head>
+<body style="margin:0">
+<div class="fp-stage">
+  <div class="fp-row">
+    <button class="fp-btn fp-btn--primary">
+      <svg class="fp-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19l1.4-4A7.5 7.5 0 1112 19.5a7.4 7.4 0 01-3.6-.9z"/></svg>
+      Falar no WhatsApp
+    </button>
+    <button class="fp-btn fp-btn--quiet">Como chegar</button>
+    <button class="fp-btn fp-btn--dark">Abrir meu painel</button>
+    <button class="fp-btn fp-btn--danger">
+      <svg class="fp-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+      Excluir conta
+    </button>
+    <button class="fp-btn fp-btn--primary" disabled>Salvando…</button>
+  </div>
+  <div class="fp-row">
+    <button class="fp-btn fp-btn--quiet fp-btn--fav" aria-pressed="false">
+      <svg class="fp-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.3-4.1 5.9-.8z"/></svg>
+      <span>Favoritar</span>
+    </button>
+    <button class="fp-btn fp-btn--quiet fp-btn--fav" aria-pressed="true">
+      <svg class="fp-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9 6.8 19.6l1-5.8-4.3-4.1 5.9-.8z"/></svg>
+      <span>Favoritado</span>
+    </button>
+    <button class="fp-btn fp-btn--quiet fp-btn--pill">
+      <svg class="fp-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+      Minha localização
+    </button>
+  </div>
+</div>
+<script>
+document.querySelectorAll('.fp-btn--fav').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var on = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', on);
+    b.querySelector('span').textContent = on ? 'Favoritado' : 'Favoritar';
+  });
+});
+</script>
+</body>
+</html>

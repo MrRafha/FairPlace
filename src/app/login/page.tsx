@@ -3,7 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+
+import { LISTING_CATEGORIES } from "@/lib/constants";
+import { trackEvent } from "@/lib/analytics";
+import { TurnstileWidget } from "@/components/auth/TurnstileWidget";
 
 function GoogleIcon() {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.8 3-4.4 3-7.3Z" /><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.7-2.5l-3.2-2.5c-.9.6-2 1-3.5 1-2.7 0-5-1.8-5.8-4.2H3v2.6A10 10 0 0 0 12 22Z" /><path fill="#FBBC05" d="M6.2 13.8a6 6 0 0 1 0-3.6V7.6H3a10 10 0 0 0 0 8.8l3.2-2.6Z" /><path fill="#EA4335" d="M12 6.1c1.5 0 2.8.5 3.8 1.5l2.8-2.8C17 3.1 14.7 2 12 2a10 10 0 0 0-9 5.6l3.2 2.6c.8-2.4 3.1-4.1 5.8-4.1Z" /></svg>;
@@ -28,6 +33,7 @@ function MarketPattern() {
 }
 
 export default function LoginPage() {
+  const router = useRouter();
   const [formMode, setFormMode] = useState<"login" | "register">("login");
   const [registrationRole, setRegistrationRole] = useState<"buyer" | "seller">("buyer");
   const [name, setName] = useState("");
@@ -36,40 +42,98 @@ export default function LoginPage() {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [product, setProduct] = useState("");
   const [category, setCategory] = useState("");
+  const [address, setAddress] = useState("");
+  const [coords, setCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locationStatus, setLocationStatus] = useState<"idle" | "loading" | "granted" | "denied">("idle");
+  const [captchaToken, setCaptchaToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  function requestLocation() {
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+      setLocationStatus("denied");
+      return;
+    }
+    setLocationStatus("loading");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCoords({ latitude: position.coords.latitude, longitude: position.coords.longitude });
+        setLocationStatus("granted");
+      },
+      () => setLocationStatus("denied"),
+      { enableHighAccuracy: false, timeout: 10000 },
+    );
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setIsLoading(true);
 
     if (formMode === "register") {
-      setError("O cadastro ainda não está disponível. O formulário de registro está preparado para a próxima etapa.");
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          passwordConfirmation,
+          role: registrationRole,
+          product: registrationRole === "seller" ? product : undefined,
+          category: registrationRole === "seller" ? category : undefined,
+          address: registrationRole === "seller" && address ? address : undefined,
+          latitude: registrationRole === "seller" && coords ? coords.latitude : undefined,
+          longitude: registrationRole === "seller" && coords ? coords.longitude : undefined,
+          turnstileToken: captchaToken,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        setIsLoading(false);
+        if (response.status === 409) {
+          setError("Este e-mail já está cadastrado. Use Entrar para acessar sua conta.");
+        } else if (response.status === 400) {
+          setError(data?.message ?? "Verifique os dados informados e tente novamente.");
+        } else {
+          setError("Não foi possível concluir o cadastro. Tente novamente em alguns instantes.");
+        }
+        return;
+      }
+
+      trackEvent("registration_completed", { role: registrationRole });
+
+      const result = await signIn("credentials", { email, password, redirect: false });
+      if (result?.error) {
+        setIsLoading(false);
+        setError("Cadastro concluído, mas não foi possível entrar automaticamente. Use Entrar.");
+        setFormMode("login");
+        return;
+      }
+      router.push("/mapa");
+      router.refresh();
       return;
     }
 
-    setIsLoading(true);
     const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
-      callbackUrl: "/",
     });
-    setIsLoading(false);
     if (result?.error) {
-      setError("Não foi possível entrar. Verifique os dados ou a configuração de autenticação.");
+      setIsLoading(false);
+      setError("E-mail ou senha incorretos. Verifique os dados e tente novamente.");
+      return;
     }
+    router.push("/mapa");
+    router.refresh();
   }
 
-  async function handleGoogleSignIn() {
+  function handleGoogleSignIn() {
     setError("");
     setIsLoading(true);
-    try {
-      await signIn("google", { callbackUrl: "/" });
-    } catch {
-      setError("O login com Google ainda não está configurado neste ambiente.");
-      setIsLoading(false);
-    }
+    void signIn("google", { callbackUrl: "/" });
   }
 
   return (
@@ -133,16 +197,31 @@ export default function LoginPage() {
                 <label htmlFor="category">Em qual categoria se encaixa?</label>
                 <select id="category" name="category" value={category} onChange={(event) => setCategory(event.target.value)} required>
                   <option value="" disabled>Selecione uma categoria</option>
-                  <option value="feira">Feira e alimentos</option>
-                  <option value="artesanato">Artesanato</option>
-                  <option value="agricultura">Agricultura local</option>
+                  {LISTING_CATEGORIES.map((listingCategory) => (
+                    <option key={listingCategory.value} value={listingCategory.value}>
+                      {listingCategory.label}
+                    </option>
+                  ))}
                 </select>
+                <label htmlFor="address">Onde você atende? (opcional)</label>
+                <input id="address" name="address" type="text" placeholder="Bairro, feira ou ponto de referência" value={address} onChange={(event) => setAddress(event.target.value)} />
+                <div className="location-field">
+                  <button type="button" className="button button-quiet location-button" onClick={requestLocation} disabled={locationStatus === "loading"}>
+                    {locationStatus === "loading" ? "Localizando..." : locationStatus === "granted" ? "Localização definida ✓" : "Usar minha localização"}
+                  </button>
+                  {locationStatus === "granted" ? <small>Sua posição aproximada será usada para aparecer no mapa.</small> : null}
+                  {locationStatus === "denied" ? <small>Não foi possível obter a localização. Você pode definir depois no seu perfil.</small> : null}
+                </div>
               </fieldset>
             ) : null}
-            <div className="captcha-placeholder" role="group" aria-label="Área reservada para CAPTCHA">
-              <span className="captcha-checkbox" aria-hidden="true" />
-              <span><strong>Verificação de segurança</strong><small>CAPTCHA será integrado nesta etapa.</small></span>
-            </div>
+            {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? (
+              <TurnstileWidget onVerify={setCaptchaToken} />
+            ) : (
+              <div className="captcha-placeholder" role="group" aria-label="Área reservada para CAPTCHA">
+                <span className="captcha-checkbox" aria-hidden="true" />
+                <span><strong>Verificação de segurança</strong><small>Configure a chave do Turnstile para ativar o CAPTCHA.</small></span>
+              </div>
+            )}
             <button className="button button-primary login-submit" type="submit" disabled={isLoading}>{isLoading ? "Aguarde..." : formMode === "login" ? "Entrar" : "Registrar-se"}</button>
           </form>
 

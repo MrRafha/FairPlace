@@ -1,0 +1,48 @@
+<!-- @dsCard group="Formulários" height=400 subtitle="Campos do painel do vendedor e da conta" -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap">
+</head>
+<body style="margin:0">
+<div class="fp-stage">
+  <div class="fp-card fp-col" style="padding:24px;gap:16px">
+    <div class="fp-field">
+      <label class="fp-label" for="f1">Nome da vitrine</label>
+      <input class="fp-input" id="f1" value="Banca da Dona Lúcia">
+    </div>
+    <div class="fp-field">
+      <label class="fp-label" for="f2">Descrição</label>
+      <textarea class="fp-input" id="f2" aria-describedby="f2h" placeholder="Conte o que você vende e quando abre"></textarea>
+      <span class="fp-caption" id="f2h">Aparece no topo do seu perfil público.</span>
+    </div>
+  </div>
+  <div class="fp-card fp-col" style="padding:24px;gap:16px">
+    <div class="fp-field">
+      <label class="fp-label" for="f3">E-mail</label>
+      <input class="fp-input" id="f3" value="lucia@exemplo.com" readonly aria-describedby="f3h">
+      <span class="fp-caption" id="f3h">O e-mail não pode ser alterado.</span>
+    </div>
+    <div class="fp-field">
+      <label class="fp-label" for="f4">Preço</label>
+      <input class="fp-input" id="f4" value="doze" aria-invalid="true" aria-describedby="f4e">
+      <span class="fp-error" id="f4e">
+        <svg class="fp-ico fp-ico--sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5M12 16v.5"/></svg>
+        Digite o preço em números, como 12,00.
+      </span>
+    </div>
+    <label class="fp-switch">
+      <input type="checkbox" checked>
+      <span>Disponível</span>
+    </label>
+  </div>
+</div>
+<script>
+var sw = document.querySelector('.fp-switch');
+sw.querySelector('input').addEventListener('change', function (e) {
+  sw.querySelector('span').textContent = e.target.checked ? 'Disponível' : 'Indisponível';
+});
+</script>
+</body>
+</html>
