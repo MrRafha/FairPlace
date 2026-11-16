@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { useRouter } from "next/navigation";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -34,13 +34,17 @@ function buildIcon(category: ListingCategoryValue): L.DivIcon {
   return L.divIcon({ className: "fp-leaflet-pin", html, iconSize: [36, 46], iconAnchor: [18, 44], popupAnchor: [0, -40] });
 }
 
-// Captura a instância do mapa via useMap (padrão estável no react-leaflet v5).
-function MapController({ mapRef }: { mapRef: MutableRefObject<L.Map | null> }) {
-  const map = useMap();
-  useEffect(() => {
-    mapRef.current = map;
-  }, [map, mapRef]);
-  return null;
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch] ?? ch));
+}
+
+function popupHtml(seller: MapSeller): string {
+  const tone = categoryTone(seller.category);
+  const addr = seller.address ? `<span class="fp-caption">${escapeHtml(seller.address)}</span>` : "";
+  return `<span class="fp-badge fp-badge--${tone}">${escapeHtml(categoryLabel(seller.category))}</span>` +
+    `<strong class="fp-popup-name">${escapeHtml(seller.displayName)}</strong>` +
+    addr +
+    `<a class="fp-link" data-seller-link href="/vendedor/${seller.id}">Ver perfil</a>`;
 }
 
 function SearchIcon() {
@@ -48,10 +52,71 @@ function SearchIcon() {
 }
 
 export function MapView({ sellers }: { sellers: MapSeller[] }) {
+  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<ListingCategoryValue | "ALL">("ALL");
   const [search, setSearch] = useState("");
   const [locationDenied, setLocationDenied] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
+  const layerRef = useRef<L.LayerGroup | null>(null);
+
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return sellers.filter((seller) => {
+      if (activeCategory !== "ALL" && seller.category !== activeCategory) return false;
+      if (!term) return true;
+      return (
+        seller.displayName.toLowerCase().includes(term) ||
+        (seller.address ?? "").toLowerCase().includes(term) ||
+        categoryLabel(seller.category).toLowerCase().includes(term)
+      );
+    });
+  }, [sellers, activeCategory, search]);
+
+  // Cria o mapa com Leaflet puro (imune ao bug de HMR/StrictMode do react-leaflet).
+  useEffect(() => {
+    if (!containerRef.current || mapRef.current) return;
+    const map = L.map(containerRef.current, { scrollWheelZoom: true }).setView(
+      [MAP_DEFAULT_CENTER.latitude, MAP_DEFAULT_CENTER.longitude],
+      MAP_DEFAULT_CENTER.zoom,
+    );
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+    layerRef.current = L.layerGroup().addTo(map);
+    mapRef.current = map;
+
+    // Intercepta cliques em "Ver perfil" dentro dos popups para navegar via router.
+    function onPopupClick(event: Event) {
+      const target = (event.target as HTMLElement)?.closest("[data-seller-link]") as HTMLAnchorElement | null;
+      if (target) {
+        event.preventDefault();
+        const href = target.getAttribute("href");
+        if (href) router.push(href);
+      }
+    }
+    map.getContainer().addEventListener("click", onPopupClick);
+
+    return () => {
+      map.getContainer().removeEventListener("click", onPopupClick);
+      map.remove();
+      mapRef.current = null;
+      layerRef.current = null;
+    };
+  }, [router]);
+
+  // Atualiza os marcadores quando o filtro muda.
+  useEffect(() => {
+    const layer = layerRef.current;
+    if (!layer) return;
+    layer.clearLayers();
+    for (const seller of filtered) {
+      L.marker([seller.latitude, seller.longitude], { icon: buildIcon(seller.category), title: seller.displayName })
+        .bindPopup(popupHtml(seller))
+        .addTo(layer);
+    }
+  }, [filtered]);
 
   function locateUser() {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
@@ -67,25 +132,6 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
       { timeout: 10000 },
     );
   }
-
-  const filtered = useMemo(() => {
-    const term = search.trim().toLowerCase();
-    return sellers.filter((seller) => {
-      if (activeCategory !== "ALL" && seller.category !== activeCategory) return false;
-      if (!term) return true;
-      return (
-        seller.displayName.toLowerCase().includes(term) ||
-        (seller.address ?? "").toLowerCase().includes(term) ||
-        categoryLabel(seller.category).toLowerCase().includes(term)
-      );
-    });
-  }, [sellers, activeCategory, search]);
-
-  const icons = useMemo(() => {
-    const map = {} as Record<ListingCategoryValue, L.DivIcon>;
-    for (const category of LISTING_CATEGORIES) map[category.value] = buildIcon(category.value);
-    return map;
-  }, []);
 
   function handleFilter(category: ListingCategoryValue | "ALL") {
     setActiveCategory(category);
@@ -159,10 +205,10 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
           </div>
         ) : (
           <div className="fp-map-list">
-            <span className="fp-caption">{filtered.length} {filtered.length === 1 ? "vendedor" : "vendedores"} por perto</span>
+            <span className="fp-caption">{filtered.length} {filtered.length === 1 ? "ponto" : "pontos"} de venda hoje</span>
             <ul className="fp-map-list-ul">
               {filtered.map((seller) => (
-                <li key={seller.id}>
+                <li key={seller.locationId}>
                   <Link href={`/vendedor/${seller.id}`} className="fp-card fp-card--link fp-vendor" onClick={() => trackEvent("seller_opened", { sellerId: seller.id })}>
                     <span className={`fp-iconbox fp-iconbox--${categoryTone(seller.category)}`}>
                       <CategoryIcon value={seller.category} />
@@ -177,7 +223,7 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
                           </span>
                         ) : null}
                       </span>
-                      <span className="fp-caption">{categoryLabel(seller.category)}</span>
+                      <span className="fp-caption">{categoryLabel(seller.category)}{seller.locationLabel ? ` · ${seller.locationLabel}` : ""}</span>
                       {seller.address ? <span className="fp-caption">{seller.address}</span> : null}
                     </span>
                   </Link>
@@ -196,30 +242,7 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
             Minha localização
           </button>
         </div>
-        <MapContainer
-          center={[MAP_DEFAULT_CENTER.latitude, MAP_DEFAULT_CENTER.longitude]}
-          zoom={MAP_DEFAULT_CENTER.zoom}
-          scrollWheelZoom
-          className="fp-map-leaflet"
-        >
-          <MapController mapRef={mapRef} />
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {filtered.map((seller) => (
-            <Marker key={seller.id} position={[seller.latitude, seller.longitude]} icon={icons[seller.category]}>
-              <Popup>
-                <span className={`fp-badge fp-badge--${categoryTone(seller.category)}`}>{categoryLabel(seller.category)}</span>
-                <strong className="fp-popup-name">{seller.displayName}</strong>
-                {seller.address ? <span className="fp-caption">{seller.address}</span> : null}
-                <Link href={`/vendedor/${seller.id}`} className="fp-link" onClick={() => trackEvent("seller_opened", { sellerId: seller.id })}>
-                  Ver perfil
-                </Link>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
+        <div ref={containerRef} className="fp-map-leaflet" />
       </div>
     </div>
   );
