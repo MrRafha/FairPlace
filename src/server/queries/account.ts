@@ -1,7 +1,6 @@
-import { getServerSession } from "next-auth";
 
 import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import type { ListingCategoryValue } from "@/lib/constants";
 
 export type AccountData = {
@@ -21,7 +20,7 @@ export type AccountData = {
 };
 
 export async function getAccountData(): Promise<AccountData | null> {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
   if (!session?.user?.id) {
     return null;
   }

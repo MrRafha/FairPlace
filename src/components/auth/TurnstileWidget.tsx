@@ -3,7 +3,9 @@
 import { useEffect, useRef } from "react";
 import Script from "next/script";
 
-const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+import { TURNSTILE_SITE_KEY } from "@/lib/externalServices";
+
+const SITE_KEY = TURNSTILE_SITE_KEY;
 
 type TurnstileApi = {
   render: (

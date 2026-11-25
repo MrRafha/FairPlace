@@ -223,8 +223,9 @@ textarea.fp-input { padding: 12px 14px; min-height: 92px; resize: vertical; }
 .fp-maptool { position: absolute; left: 16px; top: 16px; z-index: 20; display: inline-flex; align-items: center; gap: 10px; padding: 4px 4px 4px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-full); box-shadow: var(--shadow-card); font: 600 13px/1 var(--font-body); }
 .fp-maptool-btn { min-height: 44px; border-radius: var(--radius-full); }
 .fp-popup-name { font: 600 16px/1.3 var(--font-display); letter-spacing: -.2px; }
-.leaflet-popup-content .fp-badge, .leaflet-popup-content .fp-popup-name, .leaflet-popup-content .fp-caption, .leaflet-popup-content .fp-link { display: block; margin: 0 0 6px; }
-.leaflet-popup-content .fp-link { margin-bottom: 0; }
+.leaflet-popup-content .fp-popup { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding-top: 4px; line-height: 1.3; }
+.leaflet-popup-content .fp-popup > * { margin: 0; max-width: 100%; }
+.leaflet-popup-content .fp-popup .fp-badge { flex: none; margin-bottom: 2px; }
 .fp-leaflet-pin { background: none; border: 0; }
 
 /* Perfil público do vendedor */
@@ -286,7 +287,7 @@ textarea.fp-input { padding: 12px 14px; min-height: 92px; resize: vertical; }
 .fp-form-msg { color: var(--green); font-size: 13px; }
 
 /* Modais criar */
-.fp-dialog { width: min(520px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 0; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); color: var(--ink); box-shadow: var(--shadow-hover); }
+.fp-dialog { width: min(520px, calc(100vw - 32px)); max-width: 100vw; max-height: calc(100vh - 48px); margin: auto; overflow-y: auto; overscroll-behavior: contain; padding: 0; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); color: var(--ink); box-shadow: var(--shadow-hover); }
 .fp-dialog::backdrop { background: rgba(31,41,51,.4); }
 .fp-dialog-body { padding: 24px; display: flex; flex-direction: column; gap: 16px; font-family: var(--font-body); }
 .fp-dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
@@ -300,6 +301,66 @@ textarea.fp-input { padding: 12px 14px; min-height: 92px; resize: vertical; }
   .fp-dialog { width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; border: 0; }
   .fp-dialog-row { flex-direction: column; }
 }
+
+/* Locais de atendimento (painel + perfil) (sem :has(): quebra o Turbopack) */
+.fp-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.fp-iconbtn--neutral { border-color: var(--line); color: var(--ink); }
+.fp-iconbtn--neutral:hover { background: var(--green-soft); border-color: var(--green); color: var(--green-dark); }
+.fp-dialog--wide { width: min(680px, calc(100vw - 32px)); }
+.fp-weekdays { margin: 0; padding: 0; border: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.fp-weekdays-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.fp-weekday { min-width: 56px; justify-content: center; user-select: none; }
+.fp-weekday--on { background: var(--green-soft); border-color: var(--green); color: var(--green-dark); }
+.fp-weekday:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
+.fp-locpicker { width: 100%; height: 280px; border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; position: relative; z-index: 0; }
+.fp-locpicker--loading { display: grid; place-items: center; color: var(--muted); font-weight: 600; }
+.fp-locpicker-foot { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 8px; }
+.fp-loc-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.fp-loc-item { display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center; padding: 16px; }
+.fp-loc-info { flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.fp-loc-today { margin-left: 8px; vertical-align: middle; }
+@media (max-width: 560px) {
+  .fp-dialog--wide { width: 100vw; }
+  .fp-locpicker { height: 240px; }
+}
+
+/* Painel lateral da loja no /mapa (abre no "Ver perfil") */
+.fp-sellerpanel { position: absolute; top: 16px; right: 16px; bottom: 16px; z-index: 30; width: min(400px, calc(100% - 32px)); display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-hover); overflow: hidden; animation: fp-panel-in .2s ease-out; }
+@keyframes fp-panel-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+.fp-sellerpanel-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 12px 12px 20px; border-bottom: 1px solid var(--line); }
+.fp-sellerpanel-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.fp-sellerpanel-hero { display: flex; gap: 14px; align-items: center; }
+.fp-sellerpanel-hero-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.fp-sellerpanel-hero-info .fp-h2 { margin: 0; overflow-wrap: anywhere; }
+.fp-sellerpanel-desc { margin: 0; color: var(--muted); line-height: 1.5; }
+.fp-sellerpanel-facts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.fp-sellerpanel-facts li { display: flex; gap: 8px; align-items: flex-start; }
+.fp-sellerpanel-facts .fp-ico { flex: none; margin-top: 1px; color: var(--green); }
+.fp-sellerpanel-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.fp-sellerpanel-actions .favorite-control { margin: 0; }
+.fp-sellerpanel-section { display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid var(--line); }
+.fp-sellerpanel-section .fp-h3 { margin: 0; }
+.fp-sellerpanel-products, .fp-sellerpanel-locs, .fp-sellerpanel-posts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.fp-sellerpanel-product { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-md); }
+.fp-sellerpanel-product-name { min-width: 0; overflow-wrap: anywhere; }
+.fp-sellerpanel-product-price { flex: none; font-weight: 700; color: var(--green-dark); }
+.fp-sellerpanel-locs li { display: flex; flex-direction: column; gap: 2px; }
+.fp-sellerpanel-loc-name { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+.fp-sellerpanel-posts li { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; background: var(--paper); border-radius: var(--radius-md); }
+.fp-sellerpanel-posts p { margin: 0; line-height: 1.45; }
+.fp-sellerpanel-full { align-self: stretch; justify-content: center; margin-top: 4px; }
+.fp-sellerpanel-skeleton { display: flex; flex-direction: column; gap: 12px; }
+.fp-skel { display: block; border-radius: var(--radius-sm); background: linear-gradient(90deg, var(--line) 25%, var(--paper) 50%, var(--line) 75%); background-size: 200% 100%; animation: fp-skel 1.2s linear infinite; }
+.fp-skel--avatar { width: 64px; height: 64px; border-radius: var(--radius-md); }
+.fp-skel--title { width: 70%; height: 24px; }
+.fp-skel--line { width: 100%; height: 14px; }
+.fp-skel--short { width: 55%; }
+@keyframes fp-skel { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .fp-sellerpanel, .fp-skel { animation: none; } }
+@media (max-width: 720px) {
+  .fp-sellerpanel { position: fixed; top: auto; left: 0; right: 0; bottom: 0; width: 100%; max-height: 80vh; border-radius: var(--radius-lg) var(--radius-lg) 0 0; z-index: 1000; animation-name: fp-sheet-in; }
+}
+@keyframes fp-sheet-in { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
 
 /* Minha conta */
 .fp-account { max-width: 760px; margin: 0 auto; box-sizing: border-box; padding: 32px 24px 56px; display: flex; flex-direction: column; gap: 24px; }

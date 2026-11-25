@@ -1,12 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getServerSession } from "next-auth";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import type { ActionResult } from "@/server/actions/listings";
 
 const SALT_ROUNDS = 12;
@@ -28,7 +27,7 @@ const passwordSchema = z
   });
 
 async function requireUserId(): Promise<string | null> {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
   return session?.user?.id ?? null;
 }
 

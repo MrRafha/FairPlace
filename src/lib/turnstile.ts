@@ -2,9 +2,16 @@
 // Nunca confie apenas no estado visual do widget — o token precisa ser
 // validado no servidor contra a API do Turnstile.
 
+import { externalServicesEnabled } from "@/lib/externalServices";
+
 const VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 
 export async function verifyTurnstileToken(token: string | undefined | null): Promise<boolean> {
+  // Em dev os serviços externos ficam desligados (o widget nem é exibido).
+  if (!externalServicesEnabled) {
+    return true;
+  }
+
   const secret = process.env.TURNSTILE_SECRET_KEY;
 
   // Em ambiente de desenvolvimento sem chave configurada, não bloqueia o fluxo.

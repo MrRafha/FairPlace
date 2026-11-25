@@ -1,4 +1,5 @@
-import type { NextAuthOptions } from "next-auth";
+import { getServerSession, type NextAuthOptions } from "next-auth";
+import { connection } from "next/server";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
@@ -68,3 +69,11 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
+
+// Lê a sessão do usuário atual. O `connection()` avisa o Next (cacheComponents)
+// que isto depende da requisição — sem ele, o getServerSession gera bytes
+// aleatórios durante o prerender e o Next acusa erro em /mapa, /conta etc.
+export async function getSession() {
+  await connection();
+  return getServerSession(authOptions);
+}

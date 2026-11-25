@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -10,6 +9,7 @@ import { LISTING_CATEGORIES, MAP_DEFAULT_CENTER, type ListingCategoryValue } fro
 import { trackEvent } from "@/lib/analytics";
 import { CategoryIcon, categoryTone } from "@/components/icons/CategoryIcon";
 import type { MapSeller } from "@/server/queries/sellers";
+import { SellerPanel } from "@/features/map/SellerPanel";
 
 // Cores dos pins por categoria (tokens do design: green / yellow / olive).
 const PIN: Record<ListingCategoryValue, { fill: string; stroke: string; ico: string }> = {
@@ -41,10 +41,11 @@ function escapeHtml(value: string): string {
 function popupHtml(seller: MapSeller): string {
   const tone = categoryTone(seller.category);
   const addr = seller.address ? `<span class="fp-caption">${escapeHtml(seller.address)}</span>` : "";
-  return `<span class="fp-badge fp-badge--${tone}">${escapeHtml(categoryLabel(seller.category))}</span>` +
+  return `<div class="fp-popup"><span class="fp-badge fp-badge--${tone}">${escapeHtml(categoryLabel(seller.category))}</span>` +
     `<strong class="fp-popup-name">${escapeHtml(seller.displayName)}</strong>` +
+    (seller.locationLabel ? `<span class="fp-caption">${escapeHtml(seller.locationLabel)}</span>` : "") +
     addr +
-    `<a class="fp-link" data-seller-link href="/vendedor/${seller.id}">Ver perfil</a>`;
+    `<a class="fp-link" data-seller-link="${escapeHtml(seller.id)}" href="/vendedor/${escapeHtml(seller.id)}">Ver perfil</a></div>`;
 }
 
 function SearchIcon() {
@@ -52,7 +53,6 @@ function SearchIcon() {
 }
 
 export function MapView({ sellers }: { sellers: MapSeller[] }) {
-  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<ListingCategoryValue | "ALL">("ALL");
   const [search, setSearch] = useState("");
   const [locationDenied, setLocationDenied] = useState(false);
@@ -60,6 +60,9 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const layerRef = useRef<L.LayerGroup | null>(null);
+  const markersRef = useRef(new Map<string, L.Marker>());
+  // Loja aberta no painel lateral (null = painel fechado).
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -69,6 +72,7 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
       return (
         seller.displayName.toLowerCase().includes(term) ||
         (seller.address ?? "").toLowerCase().includes(term) ||
+        (seller.locationLabel ?? "").toLowerCase().includes(term) ||
         categoryLabel(seller.category).toLowerCase().includes(term)
       );
     });
@@ -87,13 +91,16 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
     layerRef.current = L.layerGroup().addTo(map);
     mapRef.current = map;
 
-    // Intercepta cliques em "Ver perfil" dentro dos popups para navegar via router.
-    function onPopupClick(event: Event) {
+    // "Ver perfil" no popup abre o painel lateral em vez de sair do mapa
+    // (Ctrl/Cmd+clique continua abrindo a página completa em outra aba).
+    function onPopupClick(event: MouseEvent) {
       const target = (event.target as HTMLElement)?.closest("[data-seller-link]") as HTMLAnchorElement | null;
-      if (target) {
-        event.preventDefault();
-        const href = target.getAttribute("href");
-        if (href) router.push(href);
+      if (!target || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      event.preventDefault();
+      const id = target.dataset.sellerLink;
+      if (id) {
+        setSelectedId(id);
+        trackEvent("seller_opened", { sellerId: id });
       }
     }
     map.getContainer().addEventListener("click", onPopupClick);
@@ -104,17 +111,19 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
       mapRef.current = null;
       layerRef.current = null;
     };
-  }, [router]);
+  }, []);
 
   // Atualiza os marcadores quando o filtro muda.
   useEffect(() => {
     const layer = layerRef.current;
     if (!layer) return;
     layer.clearLayers();
+    markersRef.current.clear();
     for (const seller of filtered) {
-      L.marker([seller.latitude, seller.longitude], { icon: buildIcon(seller.category), title: seller.displayName })
+      const marker = L.marker([seller.latitude, seller.longitude], { icon: buildIcon(seller.category), title: seller.displayName })
         .bindPopup(popupHtml(seller))
         .addTo(layer);
+      markersRef.current.set(seller.locationId, marker);
     }
   }, [filtered]);
 
@@ -137,6 +146,22 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
     setActiveCategory(category);
     trackEvent("filter_applied", { category });
   }
+
+  // Card da lista: abre o painel e leva o mapa até o ponto daquele dia.
+  function openFromList(event: React.MouseEvent<HTMLAnchorElement>, seller: MapSeller) {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.button !== 0) return;
+    event.preventDefault();
+    setSelectedId(seller.id);
+    trackEvent("seller_opened", { sellerId: seller.id });
+    const map = mapRef.current;
+    const marker = markersRef.current.get(seller.locationId);
+    if (map && marker) {
+      map.flyTo(marker.getLatLng(), Math.max(map.getZoom(), 15), { duration: 0.6 });
+      marker.openPopup();
+    }
+  }
+
+  const closePanel = useCallback(() => setSelectedId(null), []);
 
   function clearFilters() {
     setActiveCategory("ALL");
@@ -209,7 +234,12 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
             <ul className="fp-map-list-ul">
               {filtered.map((seller) => (
                 <li key={seller.locationId}>
-                  <Link href={`/vendedor/${seller.id}`} className="fp-card fp-card--link fp-vendor" onClick={() => trackEvent("seller_opened", { sellerId: seller.id })}>
+                  <Link
+                    href={`/vendedor/${seller.id}`}
+                    className={selectedId === seller.id ? "fp-card fp-card--link fp-vendor fp-vendor--active" : "fp-card fp-card--link fp-vendor"}
+                    aria-current={selectedId === seller.id ? "true" : undefined}
+                    onClick={(event) => openFromList(event, seller)}
+                  >
                     <span className={`fp-iconbox fp-iconbox--${categoryTone(seller.category)}`}>
                       <CategoryIcon value={seller.category} />
                     </span>
@@ -243,6 +273,7 @@ export function MapView({ sellers }: { sellers: MapSeller[] }) {
           </button>
         </div>
         <div ref={containerRef} className="fp-map-leaflet" />
+        {selectedId ? <SellerPanel key={selectedId} sellerId={selectedId} onClose={closePanel} /> : null}
       </div>
     </div>
   );

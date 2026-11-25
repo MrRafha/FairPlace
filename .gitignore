@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# fallback SQLite de desenvolvimento (gerados por `npm run db:sqlite`)
+/src/generated/
+/prisma/sqlite/

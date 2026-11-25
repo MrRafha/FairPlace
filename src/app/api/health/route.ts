@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
 
-import { prisma } from "@/lib/prisma";
+import { getDatabaseMode, prisma } from "@/lib/prisma";
 
 export async function GET() {
-  await prisma.$queryRaw`SELECT 1`;
+  try {
+    await prisma.$queryRaw`SELECT 1`;
 
-  return NextResponse.json({
-    status: "ok",
-    service: "fairplace-api",
-    database: "connected",
-  });
+    return NextResponse.json({
+      status: "ok",
+      service: "fairplace-api",
+      database: "connected",
+      databaseMode: await getDatabaseMode(),
+    });
+  } catch {
+    return NextResponse.json(
+      { status: "error", service: "fairplace-api", database: "unavailable" },
+      { status: 503 },
+    );
+  }
 }

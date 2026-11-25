@@ -9,6 +9,7 @@ import { signIn } from "next-auth/react";
 import { LISTING_CATEGORIES } from "@/lib/constants";
 import { trackEvent } from "@/lib/analytics";
 import { TurnstileWidget } from "@/components/auth/TurnstileWidget";
+import { externalServicesEnabled, TURNSTILE_SITE_KEY } from "@/lib/externalServices";
 
 function GoogleIcon() {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.8 3-4.4 3-7.3Z" /><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.7-2.5l-3.2-2.5c-.9.6-2 1-3.5 1-2.7 0-5-1.8-5.8-4.2H3v2.6A10 10 0 0 0 12 22Z" /><path fill="#FBBC05" d="M6.2 13.8a6 6 0 0 1 0-3.6V7.6H3a10 10 0 0 0 0 8.8l3.2-2.6Z" /><path fill="#EA4335" d="M12 6.1c1.5 0 2.8.5 3.8 1.5l2.8-2.8C17 3.1 14.7 2 12 2a10 10 0 0 0-9 5.6l3.2 2.6c.8-2.4 3.1-4.1 5.8-4.1Z" /></svg>;
@@ -214,14 +215,14 @@ export default function LoginPage() {
                 </div>
               </fieldset>
             ) : null}
-            {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? (
+            {TURNSTILE_SITE_KEY ? (
               <TurnstileWidget onVerify={setCaptchaToken} />
-            ) : (
+            ) : externalServicesEnabled ? (
               <div className="captcha-placeholder" role="group" aria-label="Área reservada para CAPTCHA">
                 <span className="captcha-checkbox" aria-hidden="true" />
                 <span><strong>Verificação de segurança</strong><small>Configure a chave do Turnstile para ativar o CAPTCHA.</small></span>
               </div>
-            )}
+            ) : null /* dev: captcha desligado (src/lib/externalServices.ts) */}
             <button className="button button-primary login-submit" type="submit" disabled={isLoading}>{isLoading ? "Aguarde..." : formMode === "login" ? "Entrar" : "Registrar-se"}</button>
           </form>
 

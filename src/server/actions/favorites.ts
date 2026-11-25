@@ -1,10 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getServerSession } from "next-auth";
 
 import { prisma } from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 
 export type FavoriteResult = { ok: boolean; favorited?: boolean; error?: string };
 
@@ -12,7 +11,7 @@ export type FavoriteResult = { ok: boolean; favorited?: boolean; error?: string 
 // Respeita a regra de negócio: um usuário não pode favoritar o mesmo vendedor
 // duas vezes (constraint @@unique no banco + checagem aqui).
 export async function toggleFavorite(sellerId: string): Promise<FavoriteResult> {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
   if (!session?.user?.id) {
     return { ok: false, error: "Faça login para favoritar vendedores." };
   }
@@ -35,7 +34,7 @@ export async function toggleFavorite(sellerId: string): Promise<FavoriteResult> 
 }
 
 export async function isFavorited(sellerId: string): Promise<boolean> {
-  const session = await getServerSession(authOptions);
+  const session = await getSession();
   if (!session?.user?.id) {
     return false;
   }

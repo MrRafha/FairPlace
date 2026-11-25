@@ -5,6 +5,7 @@ import { getCurrentSellerProfile } from "@/server/actions/sellerContext";
 import { prisma } from "@/lib/prisma";
 import { SellerDashboard } from "@/features/listings/SellerDashboard";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { toWeekdays } from "@/lib/weekdays";
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" });
@@ -28,9 +29,10 @@ async function SellerDashboardContent() {
     redirect("/conta");
   }
 
-  const [listings, posts] = await Promise.all([
+  const [listings, posts, locations] = await Promise.all([
     prisma.listing.findMany({ where: { sellerId: seller.id }, orderBy: { createdAt: "desc" } }),
     prisma.sellerPost.findMany({ where: { sellerId: seller.id }, orderBy: { createdAt: "desc" } }),
+    prisma.sellerLocation.findMany({ where: { sellerId: seller.id }, orderBy: { createdAt: "asc" } }),
   ]);
 
   return (
@@ -56,6 +58,14 @@ async function SellerDashboardContent() {
             id: post.id,
             text: post.text,
             createdAt: formatDate(post.createdAt),
+          }))}
+          locations={locations.map((location) => ({
+            id: location.id,
+            label: location.label,
+            address: location.address,
+            latitude: Number(location.latitude),
+            longitude: Number(location.longitude),
+            weekdays: toWeekdays(location.weekdays),
           }))}
           profile={{
             displayName: seller.displayName,

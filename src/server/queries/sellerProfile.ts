@@ -1,5 +1,15 @@
 import { prisma } from "@/lib/prisma";
 import type { ListingCategoryValue } from "@/lib/constants";
+import { toWeekdays } from "@/lib/weekdays";
+
+export type PublicSellerLocation = {
+  id: string;
+  label: string;
+  address: string | null;
+  latitude: number;
+  longitude: number;
+  weekdays: number[];
+};
 
 export type SellerListing = {
   id: string;
@@ -31,6 +41,7 @@ export type PublicSellerProfile = {
   isVerified: boolean;
   listings: SellerListing[];
   posts: SellerPost[];
+  locations: PublicSellerLocation[];
 };
 
 // Carrega o perfil público de um vendedor com seus produtos disponíveis e
@@ -46,6 +57,9 @@ export async function getSellerProfile(id: string): Promise<PublicSellerProfile 
       posts: {
         orderBy: { createdAt: "desc" },
         take: 20,
+      },
+      locations: {
+        orderBy: { createdAt: "asc" },
       },
     },
   });
@@ -79,6 +93,14 @@ export async function getSellerProfile(id: string): Promise<PublicSellerProfile 
       text: post.text,
       imageUrl: post.imageUrl,
       createdAt: post.createdAt,
+    })),
+    locations: seller.locations.map((location) => ({
+      id: location.id,
+      label: location.label,
+      address: location.address,
+      latitude: Number(location.latitude),
+      longitude: Number(location.longitude),
+      weekdays: toWeekdays(location.weekdays),
     })),
   };
 }

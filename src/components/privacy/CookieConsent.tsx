@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import Script from "next/script";
 import Link from "next/link";
 
+import { GA_MEASUREMENT_ID } from "@/lib/externalServices";
+
 const CONSENT_KEY = "fairplace-cookie-consent-v2";
 const CONSENT_COOKIE = "fairplace-consent";
 const CONTRAST_KEY = "fairplace-contrast";
-const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const GA_ID = GA_MEASUREMENT_ID;
 
 type Consent = "accepted" | "rejected" | null;
 type Contrast = "default" | "high";

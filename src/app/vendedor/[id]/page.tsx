@@ -10,6 +10,7 @@ import { FavoriteButton } from "@/components/auth/FavoriteButton";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { CategoryIcon, categoryTone } from "@/components/icons/CategoryIcon";
 import { LISTING_CATEGORIES, type ListingCategoryValue } from "@/lib/constants";
+import { formatWeekdays, todayWeekday } from "@/lib/weekdays";
 
 function categoryLabel(value: ListingCategoryValue): string {
   return LISTING_CATEGORIES.find((category) => category.value === value)?.label ?? value;
@@ -66,7 +67,10 @@ async function SellerProfileContent({ params }: { params: Promise<{ id: string }
 
   const favorited = await isFavorited(seller.id);
   const tone = categoryTone(seller.category);
-  const directions = directionsLink(seller);
+  const today = todayWeekday();
+  const todayLocation = seller.locations.find((location) => location.weekdays.includes(today));
+  // Com locais cadastrados, "Como chegar" aponta para o local de hoje (se houver).
+  const directions = todayLocation ? directionsLink(todayLocation) : directionsLink(seller);
 
   return (
     <div className="fp-profile">
@@ -91,7 +95,11 @@ async function SellerProfileContent({ params }: { params: Promise<{ id: string }
           </div>
           <h1 className="fp-h1">{seller.displayName}</h1>
           {seller.description ? <p className="fp-profile-desc">{seller.description}</p> : null}
-          {seller.address ? <span className="fp-caption">{seller.address}</span> : null}
+          {todayLocation ? (
+            <span className="fp-caption"><strong>Hoje em:</strong> {todayLocation.label}{todayLocation.address ? ` · ${todayLocation.address}` : ""}</span>
+          ) : seller.address ? (
+            <span className="fp-caption">{seller.address}</span>
+          ) : null}
         </div>
         <div className="fp-profile-actions">
           {seller.phone ? (
@@ -168,6 +176,37 @@ async function SellerProfileContent({ params }: { params: Promise<{ id: string }
           </div>
         )}
       </section>
+
+      {seller.locations.length > 0 ? (
+        <section className="fp-profile-section" aria-labelledby="h-locais">
+          <div className="fp-profile-head">
+            <span className="fp-eyebrow">Onde encontrar</span>
+            <h2 className="fp-h2" id="h-locais">Locais de atendimento</h2>
+          </div>
+          <ul className="fp-loc-list">
+            {seller.locations.map((location) => {
+              const openToday = location.weekdays.includes(today);
+              const link = directionsLink(location);
+              return (
+                <li key={location.id} className="fp-card fp-loc-item">
+                  <span className="fp-iconbox"><svg viewBox="0 0 24 24" className="fp-ico" aria-hidden="true"><path d="M12 21s-7-6.5-7-11.5a7 7 0 0114 0C19 14.5 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" /></svg></span>
+                  <div className="fp-loc-info">
+                    <span className="fp-contact-label">
+                      {location.label}
+                      {openToday ? <span className="fp-badge fp-badge--verified fp-loc-today">Hoje</span> : null}
+                    </span>
+                    {location.address ? <span className="fp-muted">{location.address}</span> : null}
+                    <span className="fp-caption">{formatWeekdays(location.weekdays)}</span>
+                  </div>
+                  {link ? (
+                    <a href={link} target="_blank" rel="noopener noreferrer" className="fp-link">Como chegar</a>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
 
       <section className="fp-profile-section" aria-labelledby="h-contato" id="contato">
         <h2 className="fp-h2" id="h-contato">Localização e contato</h2>
