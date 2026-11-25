@@ -134,7 +134,7 @@ async function SellerProfileContent({ params }: { params: Promise<{ id: string }
               <article key={listing.id} className="fp-card fp-product">
                 <div className="fp-product-img" role="img" aria-label="Foto do produto">
                   {listing.imageUrl ? (
-                    <Image src={listing.imageUrl} alt={listing.title} width={240} height={180} />
+                    <Image src={listing.imageUrl} alt={listing.title} width={240} height={180} unoptimized />
                   ) : (
                     <CategoryIcon value={listing.category} className="fp-ico fp-ico--lg" />
                   )}
@@ -170,7 +170,7 @@ async function SellerProfileContent({ params }: { params: Promise<{ id: string }
                   <time dateTime={post.createdAt.toISOString()} className="fp-caption">{formatDate(post.createdAt)}</time>
                 </div>
                 <p className="fp-post-text">{post.text}</p>
-                {post.imageUrl ? <Image src={post.imageUrl} alt="" width={640} height={320} className="fp-post-img-real" /> : null}
+                {post.imageUrl ? <Image src={post.imageUrl} alt="" width={640} height={320} className="fp-post-img-real" unoptimized /> : null}
               </article>
             ))}
           </div>

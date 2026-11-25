@@ -10,6 +10,8 @@ export type AccountData = {
   image: string | null;
   role: string;
   hasSellerProfile: boolean;
+  /** false = conta só-Google (confirma exclusão pelo e-mail, não pela senha). */
+  hasPassword: boolean;
   sellerProfileId: string | null;
   favorites: {
     id: string;
@@ -47,6 +49,7 @@ export async function getAccountData(): Promise<AccountData | null> {
     image: user.image,
     role: user.role,
     hasSellerProfile: Boolean(user.sellerProfile),
+    hasPassword: Boolean(user.password),
     sellerProfileId: user.sellerProfile?.id ?? null,
     favorites: user.favorites.map((favorite) => ({
       id: favorite.id,

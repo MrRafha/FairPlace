@@ -1,17 +1,18 @@
 import { z } from "zod";
 
 import { LISTING_CATEGORIES } from "@/lib/constants";
+import { emailField, passwordField } from "@/lib/validations/common";
 
 const categoryValues = LISTING_CATEGORIES.map((category) => category.value) as [string, ...string[]];
 
 export const registerSchema = z
   .object({
-    name: z.string().trim().min(1, "Informe seu nome."),
-    email: z.string().trim().email("Informe um e-mail válido."),
-    password: z.string().min(8, "A senha deve ter no mínimo 8 caracteres."),
-    passwordConfirmation: z.string(),
+    name: z.string().trim().min(1, "Informe seu nome.").max(120, "Nome muito longo."),
+    email: emailField,
+    password: passwordField,
+    passwordConfirmation: z.string().max(200),
     role: z.enum(["buyer", "seller"]),
-    product: z.string().trim().optional(),
+    product: z.string().trim().max(600, "Descreva em até 600 caracteres.").optional(),
     category: z.enum(categoryValues).optional(),
     address: z.string().trim().max(200).optional(),
     latitude: z.number().min(-90).max(90).optional(),

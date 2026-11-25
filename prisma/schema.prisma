@@ -8,37 +8,39 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String?        @unique
-  password      String?
-  image         String?
-  role          UserRole       @default(BUYER)
-  sellerProfile SellerProfile?
-  favorites     Favorite[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id                String         @id @default(cuid())
+  name              String?
+  email             String?        @unique
+  password          String?
+  // Sessões (JWT) emitidas antes desta data são invalidadas (troca de senha).
+  passwordChangedAt DateTime?
+  image             String?
+  role              UserRole       @default(BUYER)
+  sellerProfile     SellerProfile?
+  favorites         Favorite[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 }
 
 model SellerProfile {
-  id            String          @id @default(cuid())
-  userId        String          @unique
-  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  displayName   String
-  description   String?
-  category      ListingCategory
-  phone         String?
-  address       String?
-  latitude      Decimal?        @db.Decimal(9, 6)
-  longitude     Decimal?        @db.Decimal(9, 6)
-  openingHours  String?
-  isVerified    Boolean         @default(false)
-  listings      Listing[]
-  posts         SellerPost[]
-  favoritedBy   Favorite[]
-  locations     SellerLocation[]
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  id           String           @id @default(cuid())
+  userId       String           @unique
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName  String
+  description  String?
+  category     ListingCategory
+  phone        String?
+  address      String?
+  latitude     Decimal?         @db.Decimal(9, 6)
+  longitude    Decimal?         @db.Decimal(9, 6)
+  openingHours String?
+  isVerified   Boolean          @default(false)
+  listings     Listing[]
+  posts        SellerPost[]
+  favoritedBy  Favorite[]
+  locations    SellerLocation[]
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 }
 
 model SellerLocation {

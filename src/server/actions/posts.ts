@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { postSchema } from "@/lib/validations/listing";
 import { getCurrentSellerProfile } from "@/server/actions/sellerContext";
+import { parseId } from "@/lib/validations/common";
 import type { ActionResult } from "@/server/actions/listings";
 
 function parsePost(formData: FormData) {
@@ -38,10 +39,15 @@ export async function createPost(formData: FormData): Promise<ActionResult> {
   return { ok: true };
 }
 
-export async function updatePost(postId: string, formData: FormData): Promise<ActionResult> {
+export async function updatePost(rawPostId: unknown, formData: FormData): Promise<ActionResult> {
   const seller = await getCurrentSellerProfile();
   if (!seller) {
     return { ok: false, error: "Sem permissão." };
+  }
+
+  const postId = parseId(rawPostId);
+  if (!postId) {
+    return { ok: false, error: "Publicação não encontrada ou sem permissão." };
   }
 
   const post = await prisma.sellerPost.findUnique({ where: { id: postId } });
@@ -64,10 +70,15 @@ export async function updatePost(postId: string, formData: FormData): Promise<Ac
   return { ok: true };
 }
 
-export async function deletePost(postId: string): Promise<ActionResult> {
+export async function deletePost(rawPostId: unknown): Promise<ActionResult> {
   const seller = await getCurrentSellerProfile();
   if (!seller) {
     return { ok: false, error: "Sem permissão." };
+  }
+
+  const postId = parseId(rawPostId);
+  if (!postId) {
+    return { ok: false, error: "Publicação não encontrada ou sem permissão." };
   }
 
   const post = await prisma.sellerPost.findUnique({ where: { id: postId } });

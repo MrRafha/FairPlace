@@ -25,6 +25,8 @@ export function AccountManager({ account }: { account: AccountData }) {
   const [passwordMsg, setPasswordMsg] = useState("");
   const [favorites, setFavorites] = useState(account.favorites);
   const [deleteConfirm, setDeleteConfirm] = useState("");
+  const [deleteSecret, setDeleteSecret] = useState("");
+  const [deleteMsg, setDeleteMsg] = useState("");
 
   function handleProfile(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -44,7 +46,9 @@ export function AccountManager({ account }: { account: AccountData }) {
       const result = await changePassword(new FormData(form));
       if (result.ok) {
         form.reset();
-        setPasswordMsg("Senha alterada com sucesso.");
+        // A troca invalida todas as sessões (inclusive esta): entra de novo.
+        setPasswordMsg("Senha alterada. Entre de novo com a nova senha...");
+        await signOut({ callbackUrl: "/login" });
       } else {
         const first = result.fieldErrors ? Object.values(result.fieldErrors).flat().find(Boolean) : undefined;
         setPasswordMsg(first ?? result.error ?? "Erro ao alterar senha.");
@@ -62,9 +66,16 @@ export function AccountManager({ account }: { account: AccountData }) {
   }
 
   function handleDelete() {
+    setDeleteMsg("");
+    const formData = new FormData();
+    formData.set(account.hasPassword ? "currentPassword" : "confirmEmail", deleteSecret);
     startTransition(async () => {
-      const result = await deleteAccount();
-      if (result.ok) await signOut({ callbackUrl: "/" });
+      const result = await deleteAccount(formData);
+      if (result.ok) {
+        await signOut({ callbackUrl: "/" });
+        return;
+      }
+      setDeleteMsg(result.error ?? "Não foi possível excluir a conta.");
     });
   }
 
@@ -116,7 +127,7 @@ export function AccountManager({ account }: { account: AccountData }) {
             <div className="fp-field">
               <label className="fp-label" htmlFor="newPassword">Nova senha</label>
               <input id="newPassword" name="newPassword" type="password" autoComplete="new-password" className="fp-input" aria-describedby="new-h" required />
-              <span id="new-h" className="fp-caption">Use pelo menos 8 caracteres.</span>
+              <span id="new-h" className="fp-caption">Use pelo menos 10 caracteres. Depois de trocar, você entra de novo com a nova senha.</span>
             </div>
             <div className="fp-field">
               <label className="fp-label" htmlFor="confirmPassword">Repita a nova senha</label>
@@ -177,7 +188,19 @@ export function AccountManager({ account }: { account: AccountData }) {
           <label className="fp-label" htmlFor="x-conf">Para confirmar, digite EXCLUIR</label>
           <input id="x-conf" className="fp-input fp-account-danger-input" autoComplete="off" value={deleteConfirm} onChange={(event) => setDeleteConfirm(event.target.value)} />
         </div>
-        <button type="button" className="fp-btn fp-btn--danger" disabled={isPending || deleteConfirm !== "EXCLUIR"} onClick={handleDelete}>
+        <div className="fp-field">
+          <label className="fp-label" htmlFor="x-secret">{account.hasPassword ? "Sua senha atual" : "O e-mail da sua conta"}</label>
+          <input
+            id="x-secret"
+            className="fp-input fp-account-danger-input"
+            type={account.hasPassword ? "password" : "email"}
+            autoComplete={account.hasPassword ? "current-password" : "off"}
+            value={deleteSecret}
+            onChange={(event) => setDeleteSecret(event.target.value)}
+          />
+        </div>
+        {deleteMsg ? <p className="fp-error" role="alert">{deleteMsg}</p> : null}
+        <button type="button" className="fp-btn fp-btn--danger" disabled={isPending || deleteConfirm !== "EXCLUIR" || !deleteSecret} onClick={handleDelete}>
           <svg viewBox="0 0 24 24" className="fp-ico" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" /></svg>
           Excluir minha conta
         </button>

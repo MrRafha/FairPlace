@@ -7,19 +7,21 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import type { ActionResult } from "@/server/actions/listings";
+import { optionalImageUrl, passwordField } from "@/lib/validations/common";
+import { rateLimit } from "@/lib/rateLimit";
 
 const SALT_ROUNDS = 12;
 
 const profileSchema = z.object({
   name: z.string().trim().min(1, "Informe seu nome.").max(120),
-  image: z.string().trim().url("Informe uma URL de imagem válida.").optional().or(z.literal("")),
+  image: optionalImageUrl,
 });
 
 const passwordSchema = z
   .object({
-    currentPassword: z.string().min(1, "Informe a senha atual."),
-    newPassword: z.string().min(8, "A nova senha deve ter no mínimo 8 caracteres."),
-    confirmPassword: z.string(),
+    currentPassword: z.string().min(1, "Informe a senha atual.").max(200),
+    newPassword: passwordField,
+    confirmPassword: z.string().max(200),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "As senhas não coincidem.",
@@ -69,6 +71,11 @@ export async function changePassword(formData: FormData): Promise<ActionResult> 
     return { ok: false, error: "Verifique os dados.", fieldErrors: parsed.error.flatten().fieldErrors };
   }
 
+  // Limita tentativas de adivinhar a senha atual com uma sessão roubada.
+  if (rateLimit(`password:user:${userId}`, 5, 15 * 60 * 1000).limited) {
+    return { ok: false, error: "Muitas tentativas. Aguarde alguns minutos." };
+  }
+
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user?.password) {
     return { ok: false, error: "Sua conta não usa senha (login via Google)." };
@@ -80,15 +87,43 @@ export async function changePassword(formData: FormData): Promise<ActionResult> 
   }
 
   const newHash = await bcrypt.hash(parsed.data.newPassword, SALT_ROUNDS);
-  await prisma.user.update({ where: { id: userId }, data: { password: newHash } });
+  // passwordChangedAt invalida todas as sessões abertas antes da troca
+  // (inclusive a atual: o cliente leva o usuário a entrar de novo).
+  await prisma.user.update({ where: { id: userId }, data: { password: newHash, passwordChangedAt: new Date() } });
 
   return { ok: true };
 }
 
-export async function deleteAccount(): Promise<ActionResult> {
+// Exclusão irreversível: exige reautenticação no servidor (senha atual ou,
+// para conta Google sem senha, o próprio e-mail) — não basta o cookie de sessão.
+export async function deleteAccount(formData: FormData): Promise<ActionResult> {
   const userId = await requireUserId();
   if (!userId) {
     return { ok: false, error: "Sessão expirada. Faça login novamente." };
+  }
+  if (!(formData instanceof FormData)) {
+    return { ok: false, error: "Confirme sua identidade para excluir a conta." };
+  }
+  if (rateLimit(`delete:user:${userId}`, 5, 15 * 60 * 1000).limited) {
+    return { ok: false, error: "Muitas tentativas. Aguarde alguns minutos." };
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    return { ok: false, error: "Conta não encontrada." };
+  }
+
+  if (user.password) {
+    const currentPassword = formData.get("currentPassword");
+    if (typeof currentPassword !== "string" || currentPassword.length === 0 || currentPassword.length > 200 ||
+        !(await bcrypt.compare(currentPassword, user.password))) {
+      return { ok: false, error: "Senha incorreta." };
+    }
+  } else {
+    const confirmEmail = formData.get("confirmEmail");
+    if (typeof confirmEmail !== "string" || !user.email || confirmEmail.trim().toLowerCase() !== user.email.toLowerCase()) {
+      return { ok: false, error: "Digite o e-mail da sua conta para confirmar." };
+    }
   }
 
   // onDelete: Cascade cuida de SellerProfile, listings, posts e favoritos.

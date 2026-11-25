@@ -74,7 +74,9 @@ export default function CookieConsent() {
 
   function savePreferences() {
     const nextConsent: Exclude<Consent, null> = analyticsEnabled ? "accepted" : "rejected";
-    document.cookie = `${CONSENT_COOKIE}=${nextConsent}; Max-Age=31536000; Path=/; SameSite=Lax`;
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `${CONSENT_COOKIE}=${nextConsent}; Max-Age=31536000; Path=/; SameSite=Lax${secure}`;
+    applyAnalyticsConsent(nextConsent === "accepted");
     window.localStorage.setItem(CONSENT_KEY, nextConsent);
     window.localStorage.setItem(CONTRAST_KEY, contrast);
     document.documentElement.classList.toggle("high-contrast", contrast === "high");
@@ -112,6 +114,24 @@ export default function CookieConsent() {
       <button type="button" className="cookie-settings-button" aria-label="Abrir preferências de privacidade" aria-expanded={isOpen} onClick={() => setIsOpen((open) => !open)}><GearIcon /></button>
     </>
   );
+}
+
+// LGPD: revogar o consentimento precisa desligar na hora o gtag já carregado
+// (desmontar o <Script> não descarrega o gtag.js) e apagar os cookies _ga.
+function applyAnalyticsConsent(granted: boolean) {
+  if (!GA_ID) return;
+  const win = window as unknown as Record<string, unknown> & { gtag?: (...args: unknown[]) => void };
+  win[`ga-disable-${GA_ID}`] = !granted;
+  win.gtag?.("consent", "update", { analytics_storage: granted ? "granted" : "denied" });
+  if (granted) return;
+  const host = window.location.hostname;
+  for (const cookie of document.cookie.split("; ")) {
+    const name = cookie.split("=")[0];
+    if (name === "_ga" || name.startsWith("_ga_")) {
+      document.cookie = `${name}=; Max-Age=0; Path=/`;
+      document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${host}`;
+    }
+  }
 }
 
 function GoogleAnalytics({ measurementId }: { measurementId: string }) {

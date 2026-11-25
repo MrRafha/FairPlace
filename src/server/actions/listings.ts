@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { listingSchema } from "@/lib/validations/listing";
 import { getCurrentSellerProfile } from "@/server/actions/sellerContext";
 import type { ListingCategoryValue } from "@/lib/constants";
+import { parseId } from "@/lib/validations/common";
 
 export type ActionResult = { ok: boolean; error?: string; fieldErrors?: Record<string, string[] | undefined> };
 
@@ -49,10 +50,15 @@ export async function createListing(formData: FormData): Promise<ActionResult> {
   return { ok: true };
 }
 
-export async function updateListing(listingId: string, formData: FormData): Promise<ActionResult> {
+export async function updateListing(rawListingId: unknown, formData: FormData): Promise<ActionResult> {
   const seller = await getCurrentSellerProfile();
   if (!seller) {
     return { ok: false, error: "Sem permissão." };
+  }
+
+  const listingId = parseId(rawListingId);
+  if (!listingId) {
+    return { ok: false, error: "Produto não encontrado ou sem permissão." };
   }
 
   // Garante que o produto pertence ao vendedor autenticado.
@@ -83,10 +89,15 @@ export async function updateListing(listingId: string, formData: FormData): Prom
   return { ok: true };
 }
 
-export async function deleteListing(listingId: string): Promise<ActionResult> {
+export async function deleteListing(rawListingId: unknown): Promise<ActionResult> {
   const seller = await getCurrentSellerProfile();
   if (!seller) {
     return { ok: false, error: "Sem permissão." };
+  }
+
+  const listingId = parseId(rawListingId);
+  if (!listingId) {
+    return { ok: false, error: "Produto não encontrado ou sem permissão." };
   }
 
   const listing = await prisma.listing.findUnique({ where: { id: listingId } });
@@ -101,10 +112,18 @@ export async function deleteListing(listingId: string): Promise<ActionResult> {
   return { ok: true };
 }
 
-export async function setListingAvailability(listingId: string, available: boolean): Promise<ActionResult> {
+export async function setListingAvailability(rawListingId: unknown, available: unknown): Promise<ActionResult> {
   const seller = await getCurrentSellerProfile();
   if (!seller) {
     return { ok: false, error: "Sem permissão." };
+  }
+
+  const listingId = parseId(rawListingId);
+  if (!listingId) {
+    return { ok: false, error: "Produto não encontrado ou sem permissão." };
+  }
+  if (typeof available !== "boolean") {
+    return { ok: false, error: "Valor inválido." };
   }
 
   const listing = await prisma.listing.findUnique({ where: { id: listingId } });

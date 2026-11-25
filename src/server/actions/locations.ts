@@ -6,6 +6,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getCurrentSellerProfile } from "@/server/actions/sellerContext";
 import type { ActionResult } from "@/server/actions/listings";
+import { parseId } from "@/lib/validations/common";
 
 const MAX_LOCATIONS = 10;
 
@@ -52,14 +53,18 @@ export async function createLocation(formData: FormData): Promise<ActionResult> 
     return { ok: false, error: `Limite de ${MAX_LOCATIONS} locais atingido.` };
   }
 
-  await prisma.sellerLocation.create({ data: { sellerId: seller.id, ...parsed.data } });
+  // sellerId por último: nada vindo do formulário pode sobrescrevê-lo.
+  await prisma.sellerLocation.create({ data: { ...parsed.data, sellerId: seller.id } });
   revalidateSeller(seller.id);
   return { ok: true };
 }
 
-export async function updateLocation(id: string, formData: FormData): Promise<ActionResult> {
+export async function updateLocation(rawId: unknown, formData: FormData): Promise<ActionResult> {
   const seller = await getCurrentSellerProfile();
   if (!seller) return { ok: false, error: "Você precisa de um perfil de vendedor." };
+
+  const id = parseId(rawId);
+  if (!id || !(formData instanceof FormData)) return { ok: false, error: "Local não encontrado." };
 
   const parsed = parseLocation(formData);
   if (!parsed.success) {
@@ -74,9 +79,12 @@ export async function updateLocation(id: string, formData: FormData): Promise<Ac
   return { ok: true };
 }
 
-export async function deleteLocation(id: string): Promise<ActionResult> {
+export async function deleteLocation(rawId: unknown): Promise<ActionResult> {
   const seller = await getCurrentSellerProfile();
   if (!seller) return { ok: false, error: "Você precisa de um perfil de vendedor." };
+
+  const id = parseId(rawId);
+  if (!id) return { ok: false, error: "Local não encontrado." };
 
   const result = await prisma.sellerLocation.deleteMany({ where: { id, sellerId: seller.id } });
   if (result.count === 0) return { ok: false, error: "Local não encontrado." };

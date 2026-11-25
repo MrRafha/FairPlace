@@ -35,7 +35,7 @@ function buildIcon(category: ListingCategoryValue): L.DivIcon {
 }
 
 function escapeHtml(value: string): string {
-  return value.replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch] ?? ch));
+  return value.replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch] ?? ch));
 }
 
 function popupHtml(seller: MapSeller): string {

@@ -93,10 +93,12 @@ export default function LoginPage() {
       if (!response.ok) {
         const data = await response.json().catch(() => null);
         setIsLoading(false);
-        if (response.status === 409) {
-          setError("Este e-mail já está cadastrado. Use Entrar para acessar sua conta.");
+        if (response.status === 429) {
+          setError("Muitas tentativas de cadastro. Tente de novo mais tarde.");
         } else if (response.status === 400) {
-          setError(data?.message ?? "Verifique os dados informados e tente novamente.");
+          const fieldErrors = data?.errors as Record<string, string[] | undefined> | undefined;
+          const firstFieldError = fieldErrors ? Object.values(fieldErrors).flat().find(Boolean) : undefined;
+          setError(firstFieldError ?? data?.message ?? "Verifique os dados informados e tente novamente.");
         } else {
           setError("Não foi possível concluir o cadastro. Tente novamente em alguns instantes.");
         }
@@ -108,7 +110,9 @@ export default function LoginPage() {
       const result = await signIn("credentials", { email, password, redirect: false });
       if (result?.error) {
         setIsLoading(false);
-        setError("Cadastro concluído, mas não foi possível entrar automaticamente. Use Entrar.");
+        // O servidor não revela se o e-mail já existia: se o login automático
+        // falhar, provavelmente a conta já existia com outra senha.
+        setError("Não foi possível entrar automaticamente. Se este e-mail já tinha conta, use Entrar com a senha cadastrada.");
         setFormMode("login");
         return;
       }
@@ -183,7 +187,7 @@ export default function LoginPage() {
             <label htmlFor="email">E-mail</label>
             <input id="email" name="email" type="email" autoComplete="email" placeholder="voce@exemplo.com" value={email} onChange={(event) => setEmail(event.target.value)} required />
             <label htmlFor="password">Senha</label>
-            <input id="password" name="password" type="password" autoComplete={formMode === "login" ? "current-password" : "new-password"} placeholder="Digite sua senha" value={password} onChange={(event) => setPassword(event.target.value)} required />
+            <input id="password" name="password" type="password" autoComplete={formMode === "login" ? "current-password" : "new-password"} placeholder={formMode === "login" ? "Digite sua senha" : "Mínimo de 10 caracteres"} value={password} onChange={(event) => setPassword(event.target.value)} required />
             {formMode === "register" ? (
               <>
                 <label htmlFor="password-confirmation">Confirme sua senha</label>

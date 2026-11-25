@@ -17,5 +17,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
     role?: string;
+    /** Momento do login (segundos). Comparado com User.passwordChangedAt. */
+    loginAt?: number;
   }
 }
